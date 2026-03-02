@@ -19,6 +19,7 @@
             --success: #10b981;
             --danger: #ef4444;
             --warning: #f59e0b;
+            --product-accent: #d946ef;
             --border: #e2e8f0;
             --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
             --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
@@ -540,8 +541,9 @@
 
         .place-product {
             font-size: 0.875rem;
-            color: var(--primary);
+            color: var(--product-accent);
             margin-bottom: 0.75rem;
+            font-weight: 600;
         }
 
         .place-owner {
@@ -552,8 +554,43 @@
 
         .place-product {
             font-size: 0.875rem;
-            color: var(--primary);
+            color: var(--product-accent);
             margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+
+        .occupancy-status {
+            margin-bottom: 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .occupancy-badge {
+            display: inline-block;
+            padding: 0.2rem 0.7rem;
+            border-radius: 9999px;
+            margin-left: 0.35rem;
+            border: 1px solid transparent;
+        }
+
+        .occupancy-badge.busy {
+            color: #b91c1c;
+            background: #fee2e2;
+            border-color: #fecaca;
+        }
+
+        .occupancy-badge.free {
+            color: #047857;
+            background: #d1fae5;
+            border-color: #a7f3d0;
+        }
+
+        .last-payment {
+            margin-top: 0.7rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            padding-top: 0.65rem;
+            border-top: 1px dashed var(--border);
         }
 
         .status-badge {
@@ -616,6 +653,33 @@
 
         body.dark-mode .table tbody tr:hover {
             background-color: var(--border);
+        }
+
+        body.dark-mode .table th {
+            background-color: #0b1220;
+            color: #cbd5e1;
+        }
+
+        body.dark-mode .data-table-container {
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-lg);
+        }
+
+        body.dark-mode #employees-tbody td {
+            color: var(--text-main);
+            background-color: rgba(15, 23, 42, 0.35);
+        }
+
+        body.dark-mode .occupancy-badge.busy {
+            color: #fecaca;
+            background: rgba(185, 28, 28, 0.28);
+            border-color: rgba(248, 113, 113, 0.55);
+        }
+
+        body.dark-mode .occupancy-badge.free {
+            color: #a7f3d0;
+            background: rgba(4, 120, 87, 0.28);
+            border-color: rgba(52, 211, 153, 0.55);
         }
 
         /* Action Buttons */
@@ -995,6 +1059,47 @@
                 margin: 0.5rem;
                 padding: 0;
             }
+
+            .table {
+                min-width: 100%;
+            }
+
+            #employees-tbody tr {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 0.35rem;
+                padding: 0.75rem;
+                border-bottom: 1px solid var(--border);
+                background: var(--card-bg);
+                box-shadow: var(--shadow-sm);
+                border-radius: var(--radius-md);
+                margin: 0.5rem;
+            }
+
+            #employees-tbody td {
+                border: 0;
+                padding: 0.15rem 0;
+                font-size: 0.82rem;
+                color: var(--text-main);
+                word-break: break-word;
+            }
+
+            #employees-tbody td::before {
+                content: attr(data-label);
+                display: block;
+                font-size: 0.7rem;
+                color: var(--text-muted);
+                margin-bottom: 0.2rem;
+                text-transform: uppercase;
+            }
+
+            #employees-tbody td:last-child::before {
+                margin-bottom: 0.4rem;
+            }
+
+            #employees-tbody td:last-child .flex {
+                justify-content: flex-start !important;
+            }
         }
     </style>
 </head>
@@ -1198,7 +1303,7 @@
             <div class="modal-header" style="flex-wrap: wrap; gap: 1rem;">
                 <h2><span id="modal-cat-icon"></span> <span id="modal-cat-title"></span> - Sotuvchilar</h2>
                 <div style="display: flex; gap: 0.5rem; align-items: center;">
-                    <button class="btn-success" onclick="openSellerForm()" style="padding: 0.5rem;"><i
+                    <button class="btn-success" id="btn-add-seller" onclick="openSellerForm()" style="padding: 0.5rem;"><i
                             class="fas fa-plus"></i> Joy qo'shish</button>
                     <button class="close-modal" onclick="closeModal('modal-sellers')"><i
                             class="fas fa-times"></i></button>
@@ -1290,9 +1395,19 @@
                     <input type="hidden" id="place-index">
                     <div class="form-group">
                         <label class="form-label">Narxi (so'm)</label>
-                        <input type="number" id="place-price" class="form-input" min="1000" step="1000" required>
+                        <input type="number" id="place-price" class="form-input" min="0" step="1" required>
                     </div>
-                    <!-- Joy egasi ismi avtomatik generatsiya qilinadi, kiritish maydoni olib tashlandi -->
+                    <div class="form-group">
+                        <label class="form-label">Joy egasi ismi</label>
+                        <input type="text" id="place-owner" class="form-input" maxlength="50" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Joy holati</label>
+                        <select id="place-occupancy" class="form-input" required>
+                            <option value="free">🟩 Bo'sh</option>
+                            <option value="busy">🟥 Band</option>
+                        </select>
+                    </div>
                     <button type="submit" class="btn-success" style="width: 100%;">Saqlash</button>
                 </form>
             </div>
@@ -1328,6 +1443,14 @@
         function getRandomOwnerName() {
             const idx = Math.floor(Math.random() * ownerNames.length);
             return ownerNames[idx];
+        }
+
+        function getTodayDateString() {
+            return new Date().toISOString().split('T')[0];
+        }
+
+        function getFormattedLastPaymentDate(place) {
+            return place.lastPaidDate || "-";
         }
 
         // Init App
@@ -1440,6 +1563,14 @@
                             p.ownerName = getRandomOwnerName();
                             changed = true;
                         }
+                        if (!p.occupancyStatus) {
+                            p.occupancyStatus = 'free';
+                            changed = true;
+                        }
+                        if (!Object.prototype.hasOwnProperty.call(p, 'lastPaidDate')) {
+                            p.lastPaidDate = p.tolandi ? getTodayDateString() : '';
+                            changed = true;
+                        }
                     });
                     if (changed) {
                         savePlaces(parsed);
@@ -1463,7 +1594,9 @@
                     id: i,
                     amount: Math.floor(Math.random() * (20000 - 10000 + 1)) + 10000,
                     tolandi: false,
-                    ownerName: getRandomOwnerName()
+                    ownerName: getRandomOwnerName(),
+                    occupancyStatus: 'free',
+                    lastPaidDate: ''
                 });
             }
             savePlaces(places);
@@ -1501,6 +1634,7 @@
             const sideAvatar = document.getElementById('sidebar-avatar');
             const navXodimlar = document.getElementById('nav-xodimlar');
             const btnAddPlace = document.getElementById('btn-add-place');
+            const btnAddSeller = document.getElementById('btn-add-seller');
 
             const roleName = role === 'ega' ? 'Ega' : 'Yordamchi';
             userBadge.innerText = roleName;
@@ -1511,9 +1645,11 @@
             if (role === 'yordamchi') {
                 navXodimlar.classList.add('hidden');
                 if (btnAddPlace) btnAddPlace.classList.add('hidden');
+                if (btnAddSeller) btnAddSeller.classList.add('hidden');
             } else {
                 navXodimlar.classList.remove('hidden');
                 if (btnAddPlace) btnAddPlace.classList.remove('hidden');
+                if (btnAddSeller) btnAddSeller.classList.remove('hidden');
             }
 
             document.querySelector('.nav-btn[data-target="tay-joylar"]').click();
@@ -1561,6 +1697,9 @@
                 const statusText = p.tolandi ? 'To\'langan' : 'To\'lanmagan';
 
                 const productType = getProductTypeForPlace(p.id);
+                const occupancyStatus = p.occupancyStatus === 'busy'
+                    ? '<span class="occupancy-badge busy">🟥 Band</span>'
+                    : '<span class="occupancy-badge free">🟩 Bo\'sh</span>';
 
                 let actionsHTML = '';
                 if (currentUser === 'ega') {
@@ -1578,8 +1717,10 @@
                         <div class="place-id">${p.id}</div>
                         <div class="place-price">${p.amount.toLocaleString('uz-UZ')} so'm</div>
                         <div class="place-owner">Joy egasi: ${p.ownerName}</div>
+                        <div class="occupancy-status">Joy holati: ${occupancyStatus}</div>
                         ${productType ? `<div class="place-product">Mahsulot turi: ${productType}</div>` : ''}
                         <div class="status-badge ${statusClass}">${statusText}</div>
+                        <div class="last-payment">Oxirgi to'lov: ${getFormattedLastPaymentDate(p)}</div>
                     </div>
                 `;
 
@@ -1594,6 +1735,9 @@
             const p = places.find(x => x.id === id);
             if (p) {
                 p.tolandi = !p.tolandi;
+                if (p.tolandi) {
+                    p.lastPaidDate = getTodayDateString();
+                }
                 savePlaces(places);
                 renderTayJoylar();
             }
@@ -1603,7 +1747,7 @@
             openPlaceModal(index);
         }
 
-        // Tay Joy Action: Add/Edit - Joy egasi ismi avtomatik generatsiya qilinadi
+        // Tay Joy Action: Add/Edit
         function openPlaceModal(index = null) {
             const form = document.getElementById('place-form');
             form.reset();
@@ -1614,9 +1758,13 @@
                 document.getElementById('place-modal-title').innerText = `${p.id}-joyni Tahrirlash`;
                 document.getElementById('place-index').value = index;
                 document.getElementById('place-price').value = p.amount;
+                document.getElementById('place-owner').value = p.ownerName || '';
+                document.getElementById('place-occupancy').value = p.occupancyStatus || 'free';
             } else {
                 document.getElementById('place-modal-title').innerText = 'Yangi Tay Joyi Qo\'shish';
                 document.getElementById('place-index').value = '';
+                document.getElementById('place-owner').value = '';
+                document.getElementById('place-occupancy').value = 'free';
             }
 
             document.getElementById('modal-place').classList.remove('hidden');
@@ -1625,25 +1773,31 @@
         function savePlace(e) {
             e.preventDefault();
             const idxStr = document.getElementById('place-index').value;
-            const price = parseInt(document.getElementById('place-price').value);
-            
-            // Joy egasi ismi har doim avtomatik generatsiya qilinadi
-            const owner = getRandomOwnerName();
+            const price = parseInt(document.getElementById('place-price').value, 10);
+            const owner = document.getElementById('place-owner').value.trim();
+            const occupancyStatus = document.getElementById('place-occupancy').value;
+
+            if (Number.isNaN(price) || price < 0 || owner.length === 0) {
+                alert("Narxni son ko'rinishida kiriting va joy egasi ismini to'ldiring.");
+                return;
+            }
 
             let places = getPlaces();
 
             if (idxStr !== '') {
-                const idx = parseInt(idxStr);
+                const idx = parseInt(idxStr, 10);
                 places[idx].amount = price;
-                // Tahrirlashda ham yangi tasodifiy ism beriladi
                 places[idx].ownerName = owner;
+                places[idx].occupancyStatus = occupancyStatus;
             } else {
                 const newId = places.length > 0 ? Math.max(...places.map(p => p.id)) + 1 : 1;
                 places.push({
                     id: newId,
                     amount: price,
                     tolandi: false,
-                    ownerName: owner
+                    ownerName: owner,
+                    occupancyStatus,
+                    lastPaidDate: ''
                 });
             }
 
@@ -1753,6 +1907,10 @@
             document.getElementById('modal-cat-icon').innerText = category.icon;
             document.getElementById('modal-cat-title').innerText = category.title;
             document.getElementById('modal-sellers').dataset.categoryId = category.id;
+            const btnAddSeller = document.getElementById('btn-add-seller');
+            if (btnAddSeller) {
+                btnAddSeller.classList.toggle('hidden', currentUser !== 'ega');
+            }
 
             const grid = document.getElementById('modal-sellers-grid');
             grid.innerHTML = '';
@@ -1782,6 +1940,7 @@
         }
 
         function openSellerForm() {
+            if (currentUser !== 'ega') return;
             const form = document.getElementById('seller-form');
             form.reset();
             const categoryId = document.getElementById('modal-sellers').dataset.categoryId;
@@ -1893,10 +2052,10 @@
                     : `<i class="fas fa-user-circle" style="font-size:32px; color:var(--text-muted); margin-right:8px; vertical-align:middle;"></i>`;
 
                 tr.innerHTML = `
-                    <td style="font-weight: 500;">${emp.id}</td>
-                    <td style="display: flex; align-items: center;">${imgHtml} <span style="font-weight: 500;">${emp.name}</span></td>
-                    <td><span class="badge-role">${emp.role}</span></td>
-                    <td>
+                    <td data-label="# (Tartib)" style="font-weight: 500;">${emp.id}</td>
+                    <td data-label="F.I.SH" style="display: flex; align-items: center;">${imgHtml} <span style="font-weight: 500;">${emp.name}</span></td>
+                    <td data-label="Lavozim"><span class="badge-role">${emp.role}</span></td>
+                    <td data-label="Amallar">
                         <div class="flex gap-4" style="justify-content: flex-end; gap:0.5rem;">
                             <button class="icon-btn edit" onclick="editEmp(${index})"><i class="fas fa-pen"></i></button>
                             <button class="icon-btn del" onclick="deleteEmp(${index})"><i class="fas fa-trash"></i></button>
