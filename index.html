@@ -4,468 +4,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bozor Boshqaruv Tizimi</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>Davomat Tizimi</title>
     <style>
         :root {
-            --primary: #4338ca;
-            --primary-hover: #3730a3;
-            --secondary: #0f172a;
-            --bg-color: #f1f5f9;
-            --card-bg: #ffffff;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --success: #10b981;
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg: #f3f4f6;
+            --surface: #ffffff;
+            --text-main: #111827;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
             --danger: #ef4444;
+            --success: #10b981;
             --warning: #f59e0b;
-            --border: #e2e8f0;
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-            --radius-md: 0.5rem;
-            --radius-lg: 1rem;
-        }
-
-        body.dark-mode {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border: #334155;
-            --secondary: #020617;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
         }
 
         body {
-            background-color: var(--bg-color);
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg);
             color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
             min-height: 100vh;
-            display: flex;
         }
 
-        /* Utils */
-        .hidden {
-            display: none !important;
-        }
-
-        .flex {
-            display: flex;
-        }
-
-        .items-center {
-            align-items: center;
-        }
-
-        .justify-between {
-            justify-content: space-between;
-        }
-
-        .justify-center {
-            justify-content: center;
-        }
-
-        .grid {
-            display: grid;
-        }
-
-        .gap-4 {
-            gap: 1rem;
-        }
-
-        .gap-6 {
-            gap: 1.5rem;
-        }
-
-        button {
-            cursor: pointer;
-            border: none;
-            background: none;
-            font-family: inherit;
-        }
-
-        input,
-        select {
-            font-family: inherit;
-        }
-
-        /* Modals and Overlays */
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(4px);
-            z-index: 50;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Login Screen with new colors */
-        #login-overlay {
-            background: linear-gradient(135deg, #fceabb 0%, #f8b500 100%);
-            animation: fadeIn 0.4s ease-out;
-        }
-
-        .login-card {
-            background: var(--card-bg);
-            padding: 2.5rem;
-            border-radius: var(--radius-lg);
-            width: 100%;
-            max-width: 400px;
-            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-            animation: slideUp 0.4s ease-out;
-        }
-
-        .login-card h1 {
-            font-size: 1.75rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            text-align: center;
-            color: var(--primary);
-        }
-
-        .login-card p {
-            color: var(--text-muted);
-            text-align: center;
-            margin-bottom: 2rem;
-            font-size: 0.875rem;
-        }
-
-        .form-group {
-            margin-bottom: 1.25rem;
-            position: relative;
-        }
-
-        .form-label {
-            display: block;
-            font-size: 0.875rem;
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-            color: var(--text-main);
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            font-size: 0.875rem;
-            background-color: #f8fafc;
-        }
-
-        .form-input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.15);
-            background-color: #fff;
-        }
-
-        .password-container {
-            position: relative;
-        }
-
-        .toggle-password {
-            position: absolute;
-            right: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: color 0.2s;
-            font-size: 1.1rem;
-        }
-
-        .toggle-password:hover {
-            color: var(--primary);
-        }
-
-        .btn-primary {
+        header {
             background-color: var(--primary);
             color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: var(--radius-md);
-            font-weight: 600;
-            width: 100%;
-            transition: background-color 0.2s, transform 0.1s;
-        }
-
-        .btn-primary:hover {
-            background-color: var(--primary-hover);
-        }
-
-        .btn-primary:active {
-            transform: scale(0.98);
-        }
-
-        .btn-danger {
-            background-color: var(--danger);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: var(--radius-md);
-            font-weight: 500;
-            font-size: 0.875rem;
-            transition: background-color 0.2s;
-        }
-
-        .btn-danger:hover {
-            background-color: #dc2626;
-        }
-
-        .btn-success {
-            background-color: var(--success);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: var(--radius-md);
-            font-weight: 500;
-            font-size: 0.875rem;
-        }
-
-        .btn-success:hover {
-            background-color: #059669;
-        }
-
-        .error-msg {
-            background-color: rgba(239, 68, 68, 0.1);
-            color: var(--danger);
-            padding: 0.75rem;
-            border-radius: var(--radius-md);
-            font-size: 0.875rem;
-            margin-top: 1rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
 
-        /* App Layout */
-        .sidebar {
-            width: 280px;
-            background-color: var(--secondary);
-            color: white;
-            flex-shrink: 0;
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.3s;
+        header h1 {
+            margin: 0;
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
         }
 
-        .sidebar-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .sidebar-header i {
-            font-size: 1.5rem;
-            color: #818cf8;
-        }
-
-        .sidebar-header h2 {
-            font-size: 1.25rem;
-            font-weight: 600;
-        }
-
-        .nav-menu {
-            padding: 1rem 0;
-            flex-grow: 1;
-        }
-
-        .nav-item {
-            padding: 0.75rem 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            color: #cbd5e1;
-            transition: all 0.2s;
-            border-left: 3px solid transparent;
-            width: 100%;
-            text-align: left;
-        }
-
-        .nav-item:hover {
-            background-color: rgba(255, 255, 255, 0.05);
-            color: white;
-        }
-
-        .nav-item.active {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: white;
-            border-left-color: #818cf8;
-        }
-
-        /* Mobil qurilmalar uchun hover → active o'zgartirish */
-        @media (hover: hover) {
-            .place-card:hover .place-card-actions {
-                opacity: 1;
-            }
-
-            .cat-card:hover {
-                transform: translateY(-5px);
-                box-shadow: var(--shadow-lg);
-                border-color: var(--primary);
-            }
-
-            .table tbody tr:hover {
-                background-color: #f8fafc;
-            }
-
-            .nav-item:hover {
-                background-color: rgba(255, 255, 255, 0.05);
-                color: white;
-            }
-
-            .icon-btn.edit:hover {
-                background: #c7d2fe;
-            }
-
-            .icon-btn.del:hover {
-                background: #fecaca;
-            }
-
-            .btn-primary:hover {
-                background-color: var(--primary-hover);
-            }
-
-            .place-card.active-place:hover {
-                transform: translateY(-5px);
-                box-shadow: var(--shadow-lg);
-            }
-        }
-
-        /* Mobil qurilmalar uchun - barcha elementlar doimiy ko'rinishda */
-        @media (hover: none) and (pointer: coarse) {
-            .place-card-actions {
-                opacity: 1 !important;
-            }
-
-            .cat-card {
-                -webkit-tap-highlight-color: transparent;
-                transform: translateY(-5px);
-                box-shadow: var(--shadow-lg);
-                border-color: var(--primary);
-            }
-
-            .table tbody tr {
-                background-color: #f8fafc;
-            }
-
-            .nav-item {
-                background-color: rgba(255, 255, 255, 0.05);
-                color: white;
-            }
-
-            .icon-btn.edit {
-                background: #c7d2fe;
-            }
-
-            .icon-btn.del {
-                background: #fecaca;
-            }
-
-            .btn-primary {
-                background-color: var(--primary-hover);
-            }
-
-            .place-card.active-place {
-                transform: translateY(-5px);
-                box-shadow: var(--shadow-lg);
-            }
-        }
-
-        .user-panel {
-            padding: 1.5rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .user-avatar {
-            width: 36px;
-            height: 36px;
-            background-color: #818cf8;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            color: white;
-        }
-
-        .user-role {
-            font-size: 0.875rem;
-            color: #cbd5e1;
-        }
-
-        .logout-btn {
-            color: #cbd5e1;
-            padding: 0.5rem;
-            border-radius: var(--radius-md);
-            transition: all 0.2s;
-        }
-
-        .logout-btn:hover {
-            color: white;
-            background-color: rgba(239, 68, 68, 0.4);
-        }
-
-        .main-content {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .topbar {
-            background-color: var(--card-bg);
-            height: 70px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 2rem;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .topbar h1 {
-            font-size: 1.25rem;
-            font-weight: 600;
-        }
-
-        .badge-role {
-            background-color: #e0e7ff;
-            color: var(--primary);
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            margin-left: 1rem;
-            vertical-align: middle;
-        }
-
-        .section-content {
+        main {
+            flex: 1;
             padding: 2rem;
-            overflow-y: auto;
-            flex-grow: 1;
+            max-width: 1200px;
+            margin: 2rem auto;
+            /* Removed negative margin to fix the overlapping issue */
+            width: 100%;
+            box-sizing: border-box;
+            position: relative;
+            z-index: 10;
         }
 
-        /* Places & Employees Headers */
-        .page-header {
+        .card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -474,1519 +74,881 @@
             gap: 1rem;
         }
 
-        .header-actions {
+        .card h2 {
+            margin: 0;
+            font-size: 1.25rem;
+            color: var(--text-main);
+        }
+
+        .date-selector {
             display: flex;
+            align-items: center;
             gap: 0.5rem;
-        }
-
-        /* Tay Joylar Grid */
-        .places-grid {
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-        }
-
-        .place-card {
-            background-color: var(--card-bg);
-            border-radius: var(--radius-lg);
-            padding: 1.5rem;
-            box-shadow: var(--shadow-md);
+            background: #f9fafb;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
             border: 1px solid var(--border);
-            text-align: center;
-            transition: transform 0.2s, box-shadow 0.2s;
-            position: relative;
         }
 
-        .place-card-actions {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
-            display: flex;
-            gap: 0.25rem;
-            opacity: 0;
-            transition: opacity 0.2s;
+        .date-selector label {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.875rem;
         }
 
-        .place-card:hover .place-card-actions {
-            opacity: 1;
-        }
-
-        .place-card.active-place:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .clickable-area {
+        .date-selector input {
+            border: none;
+            background: transparent;
+            font-family: inherit;
+            font-size: 1rem;
+            color: var(--text-main);
+            outline: none;
             cursor: pointer;
         }
 
-        .place-id {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--text-main);
-            margin-bottom: 0.5rem;
-        }
-
-        .place-price {
-            font-size: 1.125rem;
-            color: var(--text-muted);
-            font-weight: 500;
+        .form-group {
+            display: flex;
+            gap: 1rem;
             margin-bottom: 1rem;
+            flex-wrap: wrap;
         }
 
-        .place-owner {
-            font-size: 0.9rem;
+        .input-control {
+            flex: 1;
+            min-width: 200px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .input-control label {
+            font-size: 0.875rem;
+            font-weight: 500;
             color: var(--text-muted);
-            margin-bottom: 0.5rem;
         }
 
-        .place-product {
-            font-size: 0.875rem;
-            color: var(--primary);
-            margin-bottom: 0.75rem;
+        .input-control input {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.2s;
+            background-color: #f9fafb;
         }
 
-        .place-owner {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            margin-bottom: 0.5rem;
+        .input-control input:focus {
+            border-color: var(--primary);
+            background-color: #fff;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
         }
 
-        .place-product {
-            font-size: 0.875rem;
-            color: var(--primary);
-            margin-bottom: 0.75rem;
+        .btn-wrapper {
+            display: flex;
+            align-items: flex-end;
         }
 
-        .status-badge {
-            display: inline-block;
-            padding: 0.25rem 1rem;
-            border-radius: 9999px;
-            font-size: 0.875rem;
+        button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
             font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.3);
+            height: 46px;
         }
 
-        .status-paid {
-            background-color: #d1fae5;
-            color: var(--success);
-            border: 1px solid #a7f3d0;
+        button:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 8px -1px rgba(79, 70, 229, 0.4);
         }
 
-        .status-unpaid {
-            background-color: #fee2e2;
+        button:active {
+            transform: translateY(0);
+        }
+
+        button.icon-btn {
+            padding: 0.4rem;
+            height: auto;
+            border-radius: 6px;
+            box-shadow: none;
+            background-color: transparent;
+        }
+
+        button.icon-btn.danger {
             color: var(--danger);
-            border: 1px solid #fecaca;
         }
 
-        /* Table */
-        .data-table-container {
-            background: var(--card-bg);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-md);
-            overflow: hidden;
+        button.icon-btn.danger:hover {
+            background-color: #fef2f2;
+        }
+
+        button.icon-btn.warning {
+            color: var(--warning);
+        }
+
+        button.icon-btn.warning:hover {
+            background-color: #fffbeb;
+        }
+
+        button.icon-btn.present-active {
+            background-color: var(--success);
+            color: white;
+            border-radius: 6px;
+        }
+
+        button.icon-btn.present-active:hover {
+            background-color: #059669;
+        }
+
+        button.icon-btn.absent-active {
+            background-color: var(--danger);
+            color: white;
+            border-radius: 6px;
+        }
+
+        button.icon-btn.absent-active:hover {
+            background-color: #dc2626;
+        }
+
+        button.icon-btn.secondary {
+            color: var(--text-muted);
+        }
+
+        button.icon-btn.secondary:hover {
+            background-color: #f3f4f6;
+        }
+
+        .table-container {
             overflow-x: auto;
         }
 
-        .table {
+        table {
             width: 100%;
-            border-collapse: collapse;
-            min-width: 500px;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 1rem;
         }
 
-        .table th,
-        .table td {
-            padding: 1rem 1.5rem;
-            text-align: left;
+        th,
+        td {
+            text-align: center;
+            padding: 0.75rem 0.5rem;
             border-bottom: 1px solid var(--border);
+            vertical-align: middle;
         }
 
-        .table th {
-            background-color: #f8fafc;
+        td.text-left,
+        th.text-left {
+            text-align: left;
+        }
+
+        th {
             font-weight: 600;
             color: var(--text-muted);
-            text-transform: uppercase;
             font-size: 0.75rem;
+            background-color: #f9fafb;
         }
 
-        .table tr:last-child td {
-            border-bottom: none;
+        th:first-child {
+            border-top-left-radius: 8px;
         }
 
-        .table tbody tr:hover {
-            background-color: #f8fafc;
+        th:last-child {
+            border-top-right-radius: 8px;
         }
 
-        body.dark-mode .table tbody tr:hover {
-            background-color: var(--border);
+        tr:hover td {
+            background-color: #f9fafb;
         }
 
-        /* Action Buttons */
-        .icon-btn {
-            width: 32px;
-            height: 32px;
-            border-radius: var(--radius-md);
+        .actions {
+            display: flex;
+            gap: 0.25rem;
+            justify-content: flex-end;
+        }
+
+        /* Monthly Attendance Cell Styles */
+        .day-cell {
+            cursor: pointer;
+            min-width: 28px;
+            height: 28px;
+            margin: 0 auto;
+            border-radius: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background 0.2s;
+            font-weight: bold;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+            background-color: transparent;
+            color: transparent;
+            user-select: none;
         }
 
-        .icon-btn.edit {
-            color: var(--primary);
-            background: #e0e7ff;
+        .day-cell:hover {
+            background-color: #e5e7eb;
         }
 
-        .icon-btn.edit:hover {
-            background: #c7d2fe;
-        }
-
-        .icon-btn.del {
-            color: var(--danger);
-            background: #fee2e2;
-        }
-
-        .icon-btn.del:hover {
-            background: #fecaca;
-        }
-
-        /* Dashboard Stats */
-        .stats-grid {
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background-color: var(--card-bg);
-            border-radius: var(--radius-lg);
-            padding: 1.5rem;
-            box-shadow: var(--shadow-md);
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-        }
-
-        .stat-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-        }
-
-        .icon-blue {
-            background-color: #e0e7ff;
-            color: var(--primary);
-        }
-
-        .icon-green {
+        .day-cell.present {
             background-color: #d1fae5;
             color: var(--success);
         }
 
-        .icon-red {
+        .day-cell.present:hover {
+            background-color: #a7f3d0;
+        }
+
+        .day-cell.absent {
             background-color: #fee2e2;
             color: var(--danger);
         }
 
-        .stat-info h3 {
-            font-size: 0.875rem;
-            color: var(--text-muted);
-            font-weight: 500;
-            margin-bottom: 0.25rem;
+        .day-cell.absent:hover {
+            background-color: #fecaca;
         }
 
-        .stat-info p {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--text-main);
-        }
-
-        /* Categories Section */
-        .categories-grid {
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        }
-
-        .cat-card {
-            background-color: var(--card-bg);
-            border-radius: var(--radius-lg);
-            padding: 2rem;
-            box-shadow: var(--shadow-md);
+        footer {
             text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 2px solid transparent;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            border-top: 1px solid var(--border);
+            background: var(--surface);
+            font-weight: 500;
         }
 
-        .cat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
-            border-color: var(--primary);
+        .footer-name {
+            color: var(--primary);
+            font-weight: 600;
         }
 
-        .cat-icon {
-            font-size: 3rem;
+        /* Modal classes */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(17, 24, 39, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 50;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .modal {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 450px;
+            transform: scale(0.95) translateY(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-overlay.active .modal {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal h2 {
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            font-size: 1.25rem;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .modal-footer button.cancel {
+            background-color: white;
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            box-shadow: none;
+        }
+
+        .modal-footer button.cancel:hover {
+            background-color: #f3f4f6;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state svg {
+            width: 64px;
+            height: 64px;
+            color: #d1d5db;
             margin-bottom: 1rem;
         }
 
-        .cat-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--text-main);
-        }
-
-        /* Modal specific */
-        .modal-card {
-            background: var(--card-bg);
-            border-radius: var(--radius-lg);
-            width: 100%;
-            max-width: 600px;
-            max-height: 90vh;
+        .student-name-wrapper {
             display: flex;
             flex-direction: column;
-            box-shadow: var(--shadow-lg);
-            animation: slideDown 0.3s ease-out;
-            margin: 1rem;
+            gap: 0.2rem;
         }
 
-        .modal-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .student-name {
+            font-weight: 600;
+            color: var(--text-main);
+            white-space: nowrap;
         }
 
-        .modal-header h2 {
-            font-size: 1.25rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .close-modal {
-            font-size: 1.5rem;
+        .student-phone {
+            font-size: 0.75rem;
             color: var(--text-muted);
         }
 
-        .close-modal:hover {
-            color: var(--danger);
+        .months-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
         }
 
-        .modal-body {
-            padding: 1.5rem;
-            overflow-y: auto;
-        }
-
-        /* Pure CSS Chart */
-        .chart-box {
-            background-color: var(--card-bg);
-            border-radius: var(--radius-lg);
-            padding: 2rem;
-            box-shadow: var(--shadow-md);
-            height: 300px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .chart-area {
-            flex-grow: 1;
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            gap: 4rem;
-            padding-top: 2rem;
-            position: relative;
-        }
-
-        .chart-col {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            height: 100%;
-            justify-content: flex-end;
-            width: 80px;
-        }
-
-        .chart-bar {
-            width: 100%;
-            border-radius: 8px 8px 0 0;
-            transition: height 0.5s ease;
-            position: relative;
-        }
-
-        .chart-bar.paid {
-            background: linear-gradient(to top, var(--success), #34d399);
-        }
-
-        .chart-bar.unpaid {
-            background: linear-gradient(to top, var(--danger), #f87171);
-        }
-
-        .chart-val {
-            position: absolute;
-            top: -25px;
-            width: 100%;
+        .month-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 1.5rem 1rem;
+            border-radius: 12px;
             text-align: center;
+            cursor: pointer;
             font-weight: 600;
-            font-size: 0.875rem;
+            color: var(--text-main);
+            transition: all 0.2s;
         }
 
-        /* Animations */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
+        .month-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.1);
+            transform: translateY(-2px);
+            color: var(--primary);
         }
 
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        #month-modal .modal {
+            max-width: 1000px;
+            width: 95%;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .mobile-only {
-            display: none !important;
-        }
-
-        @media (max-width: 768px) {
-            .mobile-only {
-                display: flex !important;
-            }
-
-            .sidebar {
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                height: 65px;
-                flex-direction: row;
-                z-index: 40;
-                background-color: var(--card-bg);
-                border-top: 1px solid var(--border);
-                box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.05);
-                transform: none;
-            }
-
-            .sidebar-header,
-            .user-panel {
-                display: none;
-            }
-
-            .nav-menu {
-                display: flex;
-                flex-direction: row;
-                width: 100%;
-                padding: 0;
-                justify-content: space-around;
-                align-items: center;
-            }
-
-            .nav-item {
-                flex-direction: column;
-                padding: 0.5rem 0;
-                gap: 0.25rem;
-                font-size: 0.65rem;
-                border-left: none;
-                border-bottom: 3px solid transparent;
-                text-align: center;
-                justify-content: center;
-                color: var(--text-muted);
-            }
-
-            .nav-item i {
-                font-size: 1.25rem;
-                width: auto !important;
-            }
-
-            .nav-item:hover {
-                background-color: transparent;
-                color: var(--primary);
-            }
-
-            .nav-item.active {
-                background-color: transparent;
-                color: var(--primary);
-                border-left-color: transparent;
-                border-bottom-color: var(--primary);
-            }
-
-            .main-content {
-                padding-bottom: 65px;
-                width: 100%;
-            }
-
-            .topbar {
-                padding: 0 1rem;
-            }
-
-            .section-content {
-                padding: 1rem;
-            }
-
-            .chart-area {
-                gap: 1rem;
-                height: 200px;
-            }
-
-            .page-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.75rem;
-            }
-
-            .header-actions {
-                width: 100%;
-                display: flex;
-                flex-wrap: wrap;
-                gap: 0.5rem;
-            }
-
-            .header-actions button {
-                flex: 1;
-                font-size: 0.8rem;
-                padding: 0.5rem;
-                justify-content: center;
-                display: flex;
-                align-items: center;
-                gap: 0.25rem;
-            }
-
-            .places-grid,
-            .categories-grid {
-                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-                gap: 1rem;
-            }
-
-            .place-id {
-                font-size: 1.5rem;
-            }
-
-            .place-price {
-                font-size: 0.9rem;
-            }
-
-            .place-card {
-                padding: 1rem;
-            }
-
-            .modal-card {
-                margin: 0.5rem;
-                padding: 0;
-            }
+        #month-modal .table-container {
+            overflow-y: auto;
+            max-height: calc(90vh - 120px);
         }
     </style>
 </head>
 
 <body>
 
-    <!-- Login Overlay -->
-    <div id="login-overlay" class="overlay">
-        <div class="login-card">
-            <h1>Tizimga kirish</h1>
-            <p>Bozor boshqaruv tizimi</p>
-            <form id="login-form">
-                <div class="form-group">
-                    <label class="form-label">Login</label>
-                    <input type="text" id="username" class="form-input" placeholder="Loginni kiriting"
-                        autocomplete="off" required>
+    <header>
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <h1>Xush kelibsiz, Xusniddin!</h1>
+            <p style="color: #e0e7ff; margin-top: 0.5rem; font-size: 1.1rem;">Davomat va o'quvchilarni boshqarish tizimi
+            </p>
+        </div>
+    </header>
+
+    <main>
+        <div class="card">
+            <h2>Yangi o'quvchi qo'shish</h2>
+            <form id="add-form" class="form-group" onsubmit="addStudent(event)">
+                <div class="input-control">
+                    <label for="first-name">Ism</label>
+                    <input type="text" id="first-name" placeholder="Masalan: Alisher" required>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Parol</label>
-                    <div class="password-container">
-                        <input type="password" id="password" class="form-input" placeholder="Parolni kiriting" required
-                            style="padding-right: 2.5rem;">
-                        <i class="fas fa-eye toggle-password" id="toggle-password-icon" onclick="togglePassword()"></i>
-                    </div>
+                <div class="input-control">
+                    <label for="last-name">Familiya</label>
+                    <input type="text" id="last-name" placeholder="Masalan: Navoiy" required>
                 </div>
-                <button type="submit" class="btn-primary" style="margin-top: 0.5rem;">Kirish</button>
-                <div id="login-error" class="error-msg hidden">Login yoki parol noto'g'ri!</div>
+                <div class="input-control">
+                    <label for="phone">Telefon raqam</label>
+                    <input type="tel" id="phone" placeholder="+998 90 123 45 67" required>
+                </div>
+                <div class="btn-wrapper">
+                    <button type="submit">Qo'shish</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2>O'quvchilar ro'yxati va Bugungi Davomat</h2>
+            </div>
+
+            <div style="margin-bottom: 1rem; font-size: 0.85rem; color: #6b7280;">
+                Bugungi davomatni belgilash: Yashil belgi (✔) - <b>Bor</b>, Qizil belgi (✖) - <b>Yo'q</b>
+            </div>
+
+            <div class="table-container">
+                <table id="students-table">
+                    <thead id="table-head">
+                        <!-- Headers injected by JS -->
+                    </thead>
+                    <tbody id="students-list">
+                        <!-- Students injected here by JS -->
+                    </tbody>
+                </table>
+                <div id="empty-message" class="empty-state" style="display: none;">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                        </path>
+                    </svg>
+                    <h3>O'quvchilar yo'q</h3>
+                    <p>Ro'yxatda hozircha o'quvchilar mavjud emas. Yuqoridagi shakldan yangi o'quvchi qo'shing.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Oylar bo'yicha davomat</h2>
+            <div class="months-grid" id="months-grid">
+                <!-- Oylar JS orqali qo'shiladi -->
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <span class="footer-name">Abbos Akhmedov</span> tomonidan yaratilgan
+    </footer>
+
+    <!-- Modal for Edit -->
+    <div class="modal-overlay" id="edit-modal">
+        <div class="modal">
+            <h2>O'quvchini tahrirlash</h2>
+            <form id="edit-form" onsubmit="saveEdit(event)">
+                <input type="hidden" id="edit-id">
+                <div class="input-control" style="margin-bottom: 1rem;">
+                    <label for="edit-first-name">Ism</label>
+                    <input type="text" id="edit-first-name" required>
+                </div>
+                <div class="input-control" style="margin-bottom: 1rem;">
+                    <label for="edit-last-name">Familiya</label>
+                    <input type="text" id="edit-last-name" required>
+                </div>
+                <div class="input-control" style="margin-bottom: 1.5rem;">
+                    <label for="edit-phone">Telefon raqam</label>
+                    <input type="tel" id="edit-phone" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="cancel" onclick="closeModal()">Bekor qilish</button>
+                    <button type="submit">Saqlash</button>
+                </div>
             </form>
         </div>
     </div>
 
-    <!-- Main App -->
-    <div id="app-container" class="hidden" style="width: 100%; display: flex;">
-        <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <i class="fas fa-store"></i>
-                <h2>Bozor Tizimi</h2>
+    <!-- Modal for Month Attendance -->
+    <div class="modal-overlay" id="month-modal">
+        <div class="modal">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2 id="month-modal-title" style="margin: 0;"></h2>
+                <button class="icon-btn" onclick="closeMonthModal()" style="color: var(--text-muted);">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
             </div>
-            <nav class="nav-menu">
-                <button class="nav-item nav-btn active" data-target="tay-joylar">
-                    <i class="fas fa-th-large w-6 text-center" style="width: 24px;"></i> Tay Joylar
-                </button>
-                <button class="nav-item nav-btn" data-target="joylar">
-                    <i class="fas fa-layer-group w-6 text-center" style="width: 24px;"></i> Joylar
-                </button>
-                <button class="nav-item nav-btn" data-target="boshqaruv">
-                    <i class="fas fa-chart-pie w-6 text-center" style="width: 24px;"></i> Boshqaruv
-                </button>
-                <button class="nav-item nav-btn" data-target="xodimlar" id="nav-xodimlar">
-                    <i class="fas fa-users w-6 text-center" style="width: 24px;"></i> Xodimlar
-                </button>
-            </nav>
-            <div class="user-panel">
-                <div class="user-info">
-                    <div class="user-avatar" id="sidebar-avatar">E</div>
-                    <div>
-                        <div class="user-role" style="color: white; font-weight: 500;" id="sidebar-name">Ega</div>
-                        <div class="user-role" style="font-size: 0.75rem;" id="sidebar-role">Administrator</div>
-                    </div>
+
+            <div style="margin-bottom: 1rem; font-size: 0.85rem; color: #6b7280;">
+                Ma'lumot berish uchun katakchani bosing: 1 marta bosish - <b>Bor (✔)</b>, 2 marta - <b>Yo'q (✖)</b>
+            </div>
+
+            <div class="table-container" style="flex: 1;">
+                <table id="modal-table">
+                    <thead id="modal-table-head"></thead>
+                    <tbody id="modal-students-list"></tbody>
+                </table>
+                <div id="modal-empty-message" class="empty-state" style="display: none;">
+                    <h3>O'quvchilar yo'q</h3>
                 </div>
-                <button class="logout-btn" id="logout-btn" title="Chiqish">
-                    <i class="fas fa-sign-out-alt"></i>
-                </button>
-            </div>
-        </aside>
-
-        <!-- Main Content -->
-        <main class="main-content">
-            <header class="topbar">
-                <h1 id="topbar-title">Tay Joylar <span id="user-badge" class="badge-role">Ega</span></h1>
-                <div style="display: flex; gap: 0.5rem;">
-                    <button class="icon-btn" id="theme-toggle" onclick="toggleTheme()"
-                        style="width: 36px; height: 36px; background: var(--border); color: var(--text-main);"
-                        title="Rejimni o'zgartirish">
-                        <i class="fas fa-moon" id="theme-icon"></i>
-                    </button>
-                    <button class="mobile-only icon-btn icon-red" onclick="handleLogout()"
-                        style="width: 36px; height: 36px;" title="Chiqish">
-                        <i class="fas fa-sign-out-alt"></i>
-                    </button>
-                </div>
-            </header>
-
-            <div class="section-content">
-
-                <!-- Tay Joylar Section -->
-                <section id="tay-joylar" class="content-section">
-                    <div class="page-header">
-                        <h2 style="font-size: 1.5rem; font-weight: 600;">Tay Joylar Holati</h2>
-                        <div class="header-actions">
-                            <button class="btn-success" onclick="openPlaceModal()" id="btn-add-place">
-                                <i class="fas fa-plus"></i> Yangi Joy
-                            </button>
-                            <button class="btn-primary" onclick="resetAllPlaces()" style="background: var(--warning);">
-                                <i class="fas fa-sync-alt"></i> Barchasini Yangilash
-                            </button>
-                        </div>
-                    </div>
-                    <div class="grid gap-6 places-grid" id="places-container">
-                        <!-- Places injected here -->
-                    </div>
-                </section>
-
-                <!-- Joylar Section -->
-                <section id="joylar" class="content-section hidden">
-                    <div class="page-header">
-                        <h2 style="font-size: 1.5rem; font-weight: 600;">Asosiy Bo'limlar</h2>
-                        <p class="text-muted" style="color: var(--text-muted); margin-top: 0.5rem;">Bo'lim ustiga bosib
-                            sotuvchilarni ko'ring</p>
-                    </div>
-                    <div class="grid gap-6 categories-grid" id="categories-container">
-                        <!-- Categories injected here -->
-                    </div>
-                </section>
-
-                <!-- Boshqaruv Section -->
-                <section id="boshqaruv" class="content-section hidden">
-                    <div class="page-header">
-                        <h2 style="font-size: 1.5rem; font-weight: 600;">Moliya va Statistika</h2>
-                    </div>
-
-                    <div class="grid gap-6 stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-icon icon-blue"><i class="fas fa-wallet"></i></div>
-                            <div class="stat-info">
-                                <h3>Umumiy Tushum</h3>
-                                <p id="stat-total">0 so'm</p>
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon icon-green"><i class="fas fa-check-circle"></i></div>
-                            <div class="stat-info">
-                                <h3>To'langanlar</h3>
-                                <p id="stat-paid">0</p>
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-icon icon-red"><i class="fas fa-times-circle"></i></div>
-                            <div class="stat-info">
-                                <h3>To'lanmaganlar</h3>
-                                <p id="stat-unpaid">0</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="chart-box">
-                        <h3 style="font-weight: 600; margin-bottom: 1rem; color: var(--text-muted);">To'lovlar Foizi
-                        </h3>
-                        <div class="chart-area">
-                            <div class="chart-col">
-                                <div class="chart-bar paid" id="bar-paid" style="height: 0%;">
-                                    <div class="chart-val" id="val-paid">0%</div>
-                                </div>
-                                <div class="chart-label" style="margin-top: 1rem;">To'langan</div>
-                            </div>
-                            <div class="chart-col">
-                                <div class="chart-bar unpaid" id="bar-unpaid" style="height: 0%;">
-                                    <div class="chart-val" id="val-unpaid">0%</div>
-                                </div>
-                                <div class="chart-label" style="margin-top: 1rem;">To'lanmagan</div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Xodimlar Section -->
-                <section id="xodimlar" class="content-section hidden">
-                    <div class="page-header">
-                        <h2 style="font-size: 1.5rem; font-weight: 600;">Xodimlar Boshqaruvi</h2>
-                        <button class="btn-success" onclick="openEmployeeModal()"><i class="fas fa-plus"></i> Yangi
-                            xodim</button>
-                    </div>
-
-                    <div class="data-table-container">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th># (Tartib)</th>
-                                    <th>F.I.SH</th>
-                                    <th>Lavozim</th>
-                                    <th style="text-align: right;">Amallar</th>
-                                </tr>
-                            </thead>
-                            <tbody id="employees-tbody">
-                                <!-- injected -->
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
-
-            </div>
-        </main>
-    </div>
-
-    <!-- Modals -->
-
-    <!-- Sellers Modal -->
-    <div id="modal-sellers" class="overlay hidden">
-        <div class="modal-card">
-            <div class="modal-header" style="flex-wrap: wrap; gap: 1rem;">
-                <h2><span id="modal-cat-icon"></span> <span id="modal-cat-title"></span> - Sotuvchilar</h2>
-                <div style="display: flex; gap: 0.5rem; align-items: center;">
-                    <button class="btn-success" onclick="openSellerForm()" style="padding: 0.5rem;"><i
-                            class="fas fa-plus"></i> Joy qo'shish</button>
-                    <button class="close-modal" onclick="closeModal('modal-sellers')"><i
-                            class="fas fa-times"></i></button>
-                </div>
-            </div>
-            <div class="modal-body"
-                style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem;"
-                id="modal-sellers-grid">
-                <!-- injected -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Seller Form Modal -->
-    <div id="modal-seller-form" class="overlay hidden">
-        <div class="modal-card" style="max-width: 400px;">
-            <div class="modal-header">
-                <h2>Joy (Sotuvchi) qo'shish</h2>
-                <button class="close-modal" onclick="closeModal('modal-seller-form')"><i
-                        class="fas fa-times"></i></button>
-            </div>
-            <div class="modal-body">
-                <form id="seller-form">
-                    <input type="hidden" id="seller-category-id">
-                    <div class="form-group">
-                        <label class="form-label">Joyni tanlang</label>
-                        <select id="seller-place" class="form-input" required onchange="onPlaceChange()"></select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Sotuvchi rasmi (ixtiyoriy)</label>
-                        <label style="display:inline-block; padding:0.5rem 1rem; background:var(--primary); color:#fff; border-radius:var(--radius-md); cursor:pointer; font-size:0.875rem;">
-                            Rasmni tanlash
-                            <input type="file" id="seller-image" accept="image/*" style="display:none;">
-                        </label>
-                    </div>
-                    <input type="hidden" id="seller-name">
-                    <button type="submit" class="btn-success" style="width: 100%;">Saqlash</button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Employee Form Modal -->
-    <div id="modal-employee" class="overlay hidden">
-        <div class="modal-card" style="max-width: 400px;">
-            <div class="modal-header">
-                <h2 id="emp-modal-title">Xodim qo'shish</h2>
-                <button class="close-modal" onclick="closeModal('modal-employee')"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="modal-body">
-                <form id="emp-form">
-                    <input type="hidden" id="emp-index">
-                    <div class="form-group">
-                        <label class="form-label">Ism familiya</label>
-                        <input type="text" id="emp-name" class="form-input" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Lavozim</label>
-                        <select id="emp-role" class="form-input" required>
-                            <option value="Menejer">Menejer</option>
-                            <option value="Kassir">Kassir</option>
-                            <option value="Qorovul">Qorovul</option>
-                            <option value="Farrosh">Farrosh</option>
-                            <option value="Texnik">Texnik</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Rasmi (ixtiyoriy)</label>
-                        <label style="display:inline-block; padding:0.5rem 1rem; background:var(--primary); color:#fff; border-radius:var(--radius-md); cursor:pointer; font-size:0.875rem;">
-                            Rasmni tanlash
-                            <input type="file" id="emp-image" accept="image/*" style="display:none;">
-                        </label>
-                    </div>
-                    <button type="submit" class="btn-success" style="width: 100%;">Saqlash</button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Tay Joyi Form Modal -->
-    <div id="modal-place" class="overlay hidden">
-        <div class="modal-card" style="max-width: 350px;">
-            <div class="modal-header">
-                <h2 id="place-modal-title">Yangi Tay Joyi</h2>
-                <button class="close-modal" onclick="closeModal('modal-place')"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="modal-body">
-                <form id="place-form">
-                    <input type="hidden" id="place-index">
-                    <div class="form-group">
-                        <label class="form-label">Narxi (so'm)</label>
-                        <input type="number" id="place-price" class="form-input" min="1000" step="1000" required>
-                    </div>
-                    <!-- Joy egasi ismi avtomatik generatsiya qilinadi, kiritish maydoni olib tashlandi -->
-                    <button type="submit" class="btn-success" style="width: 100%;">Saqlash</button>
-                </form>
             </div>
         </div>
     </div>
 
     <script>
-        // Data & State
-        let currentUser = null; // 'ega' or 'yordamchi'
+        // State
+        let students = JSON.parse(localStorage.getItem('attendance_students')) || [];
+        let attendance = JSON.parse(localStorage.getItem('attendance_records')) || {};
+        // Example: { "2026-03-08": { studentId1: "present", studentId2: "absent" } }
 
-        const credentials = {
-            'ega': { login: 'ega', pass: 'ega123' },
-            'yordamchi': { login: 'yordamchi', pass: 'yordamchi123' }
-        };
+        // Setup initial variables
 
-        const categories = [
-            { id: 1, title: 'Tovarlar', icon: '🛍️' },
-            { id: 2, title: 'Meva va Sabzavotlar', icon: '🍎' },
-            { id: 3, title: 'Go\'sht mahsulotlari', icon: '🥩' },
-            { id: 4, title: 'Non mahsulotlari', icon: '🥖' },
-            { id: 5, title: 'Veterinariya mahsulotlari', icon: '🐶' },
-            { id: 6, title: 'Ichimliklar', icon: '🥤' }
-        ];
+        // DOM elements
+        const tableHead = document.getElementById('table-head');
+        const studentsList = document.getElementById('students-list');
+        const emptyMessage = document.getElementById('empty-message');
+        const studentsTable = document.getElementById('students-table');
+        const editModal = document.getElementById('edit-modal');
 
-        // Tasodifiy o'zbek ismlari ro'yxati (joy egasi uchun)
-        const ownerNames = [
-            'Azizbek', 'Sardor', 'Jasur', 'Diyor', 'Shohruh', 'Bekzod', 'Islom',
-            'Bobur', 'Jamshid', 'Ulug\'bek', 'Oybek', 'Zafar', 'Baxtiyor',
-            'Dilshod', 'Sherzod', 'Shahboz', 'Javohir', 'Abdulloh', 'Mahmud',
-            'Shukrullo', 'Jahongir', 'Husniddin', 'Farrux', 'Doniyor'
-        ];
+        // Initial render
+        renderStudents();
 
-        function getRandomOwnerName() {
-            const idx = Math.floor(Math.random() * ownerNames.length);
-            return ownerNames[idx];
+        function getDaysInMonth(year, monthIndex) {
+            return new Date(year, monthIndex, 0).getDate();
         }
 
-        // Init App
-        function initApp() {
-            checkDailyReset();
-            initTheme();
+        let activeModalYear = null;
+        let activeModalMonth = null;
 
-            const savedUser = localStorage.getItem('bozor_user');
-            if (savedUser) {
-                loginSuccess(savedUser);
+        function toggleAttendance(studentId, day, isModal = false, modalYear = null, modalMonth = null) {
+            let yearMonth = '';
+            if (isModal && modalYear && modalMonth) {
+                yearMonth = `${modalYear}-${String(modalMonth).padStart(2, '0')}`;
             } else {
-                document.getElementById('login-overlay').classList.remove('hidden');
+                const today = new Date();
+                yearMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
+            }
+            if (!yearMonth) return;
+
+            const dateStr = `${yearMonth}-${String(day).padStart(2, '0')}`;
+            if (!attendance[dateStr]) {
+                attendance[dateStr] = {};
             }
 
-            // Bind events
-            document.getElementById('login-form').addEventListener('submit', handleLogin);
-            document.getElementById('logout-btn').addEventListener('click', handleLogout);
-            document.getElementById('emp-form').addEventListener('submit', saveEmployee);
-            document.getElementById('place-form').addEventListener('submit', savePlace);
-            document.getElementById('seller-form').addEventListener('submit', saveSeller);
+            const currentStatus = attendance[dateStr][studentId];
 
-            // Tab Navigation
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
+            if (!currentStatus) {
+                attendance[dateStr][studentId] = 'present';
+            } else if (currentStatus === 'present') {
+                attendance[dateStr][studentId] = 'absent';
+            } else {
+                delete attendance[dateStr][studentId];
+            }
 
-                    const target = btn.getAttribute('data-target');
-                    document.querySelectorAll('.content-section').forEach(sec => sec.classList.add('hidden'));
-                    document.getElementById(target).classList.remove('hidden');
+            saveData();
+            renderStudents();
+            if (activeModalYear && activeModalMonth) {
+                renderModalStudents(activeModalYear, activeModalMonth);
+            }
+        }
 
-                    let title = btn.innerText.trim();
-                    const roleName = currentUser === 'ega' ? 'Ega' : 'Yordamchi';
-                    document.getElementById('topbar-title').innerHTML = `${title} <span class="badge-role">${roleName}</span>`;
+        function setAttendance(studentId, day, status) {
+            const today = new Date();
+            const yearMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
+            const dateStr = `${yearMonth}-${String(day).padStart(2, '0')}`;
 
-                    if (target === 'tay-joylar') renderTayJoylar();
-                    if (target === 'boshqaruv') updateStats();
-                    if (target === 'joylar') renderCategories();
-                    if (target === 'xodimlar') renderEmployees();
+            if (!attendance[dateStr]) {
+                attendance[dateStr] = {};
+            }
+
+            // Agar ayni shu tugma bosilsa o'chiramiz, aks holda holatni o'zgartiramiz
+            if (attendance[dateStr][studentId] === status) {
+                delete attendance[dateStr][studentId];
+            } else {
+                attendance[dateStr][studentId] = status;
+            }
+
+            saveData();
+            renderStudents();
+            if (activeModalYear && activeModalMonth) {
+                renderModalStudents(activeModalYear, activeModalMonth);
+            }
+        }
+
+        function renderStudents() {
+            const today = new Date();
+            const yearStr = today.getFullYear();
+            const monthStr = String(today.getMonth() + 1).padStart(2, '0');
+            const dayNum = today.getDate();
+            const yearMonth = `${yearStr}-${monthStr}`;
+
+            // Generate Headers
+            let tHeadHtml = `
+                <tr>
+                    <th class="text-left" style="width: 40px;">№</th>
+                    <th class="text-left" style="min-width: 150px;">O'quvchi</th>
+                    <th class="text-right" style="min-width: 150px;">Bugungi davomat / Amallar</th>
+                </tr>
+            `;
+            tableHead.innerHTML = tHeadHtml;
+
+            // Generate Body
+            if (students.length === 0) {
+                studentsTable.style.display = 'none';
+                emptyMessage.style.display = 'block';
+            } else {
+                studentsTable.style.display = 'table';
+                emptyMessage.style.display = 'none';
+
+                studentsList.innerHTML = '';
+                students.forEach((student, index) => {
+                    const tr = document.createElement('tr');
+
+                    let rowHtml = `
+                        <td class="text-left">${index + 1}</td>
+                        <td class="text-left">
+                            <div class="student-name-wrapper">
+                                <span class="student-name">${escapeHTML(student.firstName)} ${escapeHTML(student.lastName)}</span>
+                                <span class="student-phone">${escapeHTML(student.phone)}</span>
+                            </div>
+                        </td>
+                    `;
+
+                    const dateStr = `${yearMonth}-${String(dayNum).padStart(2, '0')}`;
+                    const status = (attendance[dateStr] && attendance[dateStr][student.id]) || null;
+
+                    let presentClass = status === 'present' ? 'present-active' : 'secondary';
+                    let absentClass = status === 'absent' ? 'absent-active' : 'secondary';
+
+                    let presentIcon = `<svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
+                    let absentIcon = `<svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>`;
+
+                    rowHtml += `
+                        <td class="text-right">
+                            <div class="actions">
+                                <button class="icon-btn ${presentClass}" onclick="setAttendance(${student.id}, ${dayNum}, 'present')" title="Bor">
+                                    ${presentIcon}
+                                </button>
+                                <button class="icon-btn ${absentClass}" onclick="setAttendance(${student.id}, ${dayNum}, 'absent')" title="Yo'q">
+                                    ${absentIcon}
+                                </button>
+                                <button class="icon-btn warning" onclick="openEditModal(${student.id})" title="Tahrirlash">
+                                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                                </button>
+                                <button class="icon-btn danger" onclick="deleteStudent(${student.id})" title="O'chirish">
+                                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                </button>
+                            </div>
+                        </td>
+                    `;
+
+                    tr.innerHTML = rowHtml;
+                    studentsList.appendChild(tr);
                 });
-            });
-        }
-
-        // Theme Logic
-        function toggleTheme() {
-            const body = document.body;
-            body.classList.toggle('dark-mode');
-            const icon = document.getElementById('theme-icon');
-
-            if (body.classList.contains('dark-mode')) {
-                icon.classList.remove('fa-moon');
-                icon.classList.add('fa-sun');
-                localStorage.setItem('bozor_theme', 'dark');
-            } else {
-                icon.classList.remove('fa-sun');
-                icon.classList.add('fa-moon');
-                localStorage.setItem('bozor_theme', 'light');
             }
         }
 
-        function initTheme() {
-            const savedTheme = localStorage.getItem('bozor_theme');
-            if (savedTheme === 'dark') {
-                document.body.classList.add('dark-mode');
-                const icon = document.getElementById('theme-icon');
-                if (icon) {
-                    icon.classList.remove('fa-moon');
-                    icon.classList.add('fa-sun');
+        function addStudent(e) {
+            e.preventDefault();
+
+            const firstNameInput = document.getElementById('first-name');
+            const lastNameInput = document.getElementById('last-name');
+            const phoneInput = document.getElementById('phone');
+
+            const newStudent = {
+                id: Date.now(),
+                firstName: firstNameInput.value.trim(),
+                lastName: lastNameInput.value.trim(),
+                phone: phoneInput.value.trim()
+            };
+
+            students.push(newStudent);
+            saveData();
+            renderStudents();
+
+            firstNameInput.value = '';
+            lastNameInput.value = '';
+            phoneInput.value = '';
+        }
+
+        function deleteStudent(id) {
+            if (confirm("Bu o'quvchini davomatdan butunlay o'chirishni xohlaysizmi?")) {
+                students = students.filter(s => s.id !== id);
+
+                // Also clean up their attendance records
+                for (const date in attendance) {
+                    if (attendance[date][id]) {
+                        delete attendance[date][id];
+                    }
                 }
+
+                saveData();
+                renderStudents();
             }
         }
 
-        // Parol ko'rsatish toggle
-        function togglePassword() {
-            const input = document.getElementById('password');
-            const icon = document.getElementById('toggle-password-icon');
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
+        function openEditModal(id) {
+            const student = students.find(s => s.id === id);
+            if (student) {
+                document.getElementById('edit-id').value = student.id;
+                document.getElementById('edit-first-name').value = student.firstName;
+                document.getElementById('edit-last-name').value = student.lastName;
+                document.getElementById('edit-phone').value = student.phone;
+
+                editModal.classList.add('active');
+            }
+        }
+
+        function closeModal() {
+            editModal.classList.remove('active');
+        }
+
+        function saveEdit(e) {
+            e.preventDefault();
+
+            const id = parseInt(document.getElementById('edit-id').value);
+            const index = students.findIndex(s => s.id === id);
+
+            if (index !== -1) {
+                students[index].firstName = document.getElementById('edit-first-name').value.trim();
+                students[index].lastName = document.getElementById('edit-last-name').value.trim();
+                students[index].phone = document.getElementById('edit-phone').value.trim();
+
+                saveData();
+                renderStudents();
+                closeModal();
+            }
+        }
+
+        function saveData() {
+            localStorage.setItem('attendance_students', JSON.stringify(students));
+            localStorage.setItem('attendance_records', JSON.stringify(attendance));
+        }
+
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g,
+                tag => ({
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    "'": '&#39;',
+                    '"': '&quot;'
+                }[tag])
+            );
+        }
+
+        // --- Monthly Grid & Modal Logic ---
+
+        const monthNames = ["Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun", "Iyul", "Avgust", "Sentabr", "Oktabr", "Noyabr", "Dekabr"];
+
+        function renderMonthsGrid() {
+            const grid = document.getElementById('months-grid');
+            let html = '';
+            const currentYear = new Date().getFullYear();
+
+            monthNames.forEach((name, index) => {
+                const monthNum = index + 1;
+                html += `<div class="month-card" onclick="openMonthModal(${currentYear}, ${monthNum}, '${name}')">${name}</div>`;
+            });
+            grid.innerHTML = html;
+        }
+
+        renderMonthsGrid();
+
+        const monthModal = document.getElementById('month-modal');
+
+        function openMonthModal(year, month, monthName) {
+            activeModalYear = year;
+            activeModalMonth = month;
+            document.getElementById('month-modal-title').innerText = `${year}-yil ${monthName} davomati`;
+            renderModalStudents(year, month);
+            monthModal.classList.add('active');
+        }
+
+        function closeMonthModal() {
+            activeModalYear = null;
+            activeModalMonth = null;
+            monthModal.classList.remove('active');
+        }
+
+        function renderModalStudents(year, month) {
+            const daysCount = getDaysInMonth(year, month);
+            const tHead = document.getElementById('modal-table-head');
+            const tBody = document.getElementById('modal-students-list');
+            const emptyMsg = document.getElementById('modal-empty-message');
+            const table = document.getElementById('modal-table');
+
+            let tHeadHtml = `
+                <tr>
+                    <th class="text-left" style="width: 40px;">№</th>
+                    <th class="text-left" style="min-width: 150px;">O'quvchi</th>
+            `;
+            for (let i = 1; i <= daysCount; i++) {
+                tHeadHtml += `<th title="${i}-${month}-${year}">${i}</th>`;
+            }
+            tHeadHtml += `</tr>`;
+            tHead.innerHTML = tHeadHtml;
+
+            if (students.length === 0) {
+                table.style.display = 'none';
+                emptyMsg.style.display = 'block';
             } else {
-                input.type = 'password';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            }
-        }
+                table.style.display = 'table';
+                emptyMsg.style.display = 'none';
 
-        // Daily Reset Check
-        function checkDailyReset() {
-            const today = new Date().toISOString().split('T')[0];
-            const lastReset = localStorage.getItem('bozor_last_reset');
+                tBody.innerHTML = '';
+                const yearMonth = `${year}-${String(month).padStart(2, '0')}`;
 
-            if (lastReset !== today) {
-                let places = getPlaces();
-                places.forEach(p => p.tolandi = false);
-                savePlaces(places);
-                localStorage.setItem('bozor_last_reset', today);
-            }
-        }
+                students.forEach((student, index) => {
+                    const tr = document.createElement('tr');
+                    let rowHtml = `
+                        <td class="text-left">${index + 1}</td>
+                        <td class="text-left">
+                            <div class="student-name-wrapper">
+                                <span class="student-name">${escapeHTML(student.firstName)} ${escapeHTML(student.lastName)}</span>
+                                <span class="student-phone">${escapeHTML(student.phone)}</span>
+                            </div>
+                        </td>
+                    `;
 
-        function getPlaces() {
-            const data = localStorage.getItem('bozor_places');
-            if (data) {
-                try {
-                    const parsed = JSON.parse(data);
-                    // Eski yozuvlarni yangi formatga moslashtirish (ownerName qo'shish)
-                    let changed = false;
-                    parsed.forEach(p => {
-                        if (!p.ownerName) {
-                            p.ownerName = getRandomOwnerName();
-                            changed = true;
+                    for (let day = 1; day <= daysCount; day++) {
+                        const dateStr = `${yearMonth}-${String(day).padStart(2, '0')}`;
+                        const status = (attendance[dateStr] && attendance[dateStr][student.id]) || null;
+
+                        let cellClass = "day-cell";
+                        let mark = "";
+                        if (status === 'present') {
+                            cellClass += " present";
+                            mark = "✔";
+                        } else if (status === 'absent') {
+                            cellClass += " absent";
+                            mark = "✖";
                         }
-                    });
-                    if (changed) {
-                        savePlaces(parsed);
+
+                        rowHtml += `
+                            <td>
+                                <div class="${cellClass}" onclick="toggleAttendance(${student.id}, ${day}, true, ${year}, ${month})" title="${day}-kun: ${student.firstName}">
+                                    ${mark}
+                                </div>
+                            </td>
+                        `;
                     }
-                    return parsed;
-                } catch (e) {
-                    return initializePlaces();
-                }
-            }
-            return initializePlaces();
-        }
-
-        function savePlaces(places) {
-            localStorage.setItem('bozor_places', JSON.stringify(places));
-        }
-
-        function initializePlaces() {
-            const places = [];
-            for (let i = 1; i <= 20; i++) {
-                places.push({
-                    id: i,
-                    amount: Math.floor(Math.random() * (20000 - 10000 + 1)) + 10000,
-                    tolandi: false,
-                    ownerName: getRandomOwnerName()
+                    tr.innerHTML = rowHtml;
+                    tBody.appendChild(tr);
                 });
             }
-            savePlaces(places);
-            return places;
         }
 
-        // Auth
-        function handleLogin(e) {
-            e.preventDefault();
-            const u = document.getElementById('username').value.trim();
-            const p = document.getElementById('password').value.trim();
-            const err = document.getElementById('login-error');
-
-            if (u === credentials.ega.login && p === credentials.ega.pass) {
-                loginSuccess('ega');
-            } else if (u === credentials.yordamchi.login && p === credentials.yordamchi.pass) {
-                loginSuccess('yordamchi');
-            } else {
-                err.classList.remove('hidden');
+        // Close modal when clicking outside
+        editModal.addEventListener('click', function (e) {
+            if (e.target === this) {
+                closeModal();
             }
-        }
+        });
 
-        function loginSuccess(role) {
-            currentUser = role;
-            localStorage.setItem('bozor_user', role);
-
-            document.getElementById('login-overlay').classList.add('hidden');
-            document.getElementById('app-container').classList.remove('hidden');
-            document.getElementById('app-container').style.display = 'flex';
-
-            // UI Adjustments
-            const userBadge = document.getElementById('user-badge');
-            const sideName = document.getElementById('sidebar-name');
-            const sideRole = document.getElementById('sidebar-role');
-            const sideAvatar = document.getElementById('sidebar-avatar');
-            const navXodimlar = document.getElementById('nav-xodimlar');
-            const btnAddPlace = document.getElementById('btn-add-place');
-
-            const roleName = role === 'ega' ? 'Ega' : 'Yordamchi';
-            userBadge.innerText = roleName;
-            sideName.innerText = roleName;
-            sideRole.innerText = role === 'ega' ? 'Administrator' : 'Nazoratchi';
-            sideAvatar.innerText = role === 'ega' ? 'E' : 'Y';
-
-            if (role === 'yordamchi') {
-                navXodimlar.classList.add('hidden');
-                if (btnAddPlace) btnAddPlace.classList.add('hidden');
-            } else {
-                navXodimlar.classList.remove('hidden');
-                if (btnAddPlace) btnAddPlace.classList.remove('hidden');
+        monthModal.addEventListener('click', function (e) {
+            if (e.target === this) {
+                closeMonthModal();
             }
-
-            document.querySelector('.nav-btn[data-target="tay-joylar"]').click();
-            renderTayJoylar();
-        }
-
-        function handleLogout() {
-            localStorage.removeItem('bozor_user');
-            currentUser = null;
-            document.getElementById('app-container').classList.add('hidden');
-            document.getElementById('app-container').style.display = '';
-            document.getElementById('login-overlay').classList.remove('hidden');
-            document.getElementById('login-form').reset();
-            document.getElementById('login-error').classList.add('hidden');
-        }
-
-        // Barcha joylarni to'lanmagan qilish
-        function resetAllPlaces() {
-            if (confirm("Barcha joylarni To'lanmagan holatiga o'tkazishni tasdiqlaysizmi?")) {
-                let places = getPlaces();
-                places.forEach(p => p.tolandi = false);
-                savePlaces(places);
-                renderTayJoylar();
-            }
-        }
-
-        function getProductTypeForPlace(placeId) {
-            const sellers = getSellers();
-            const s = sellers.find(x => x.placeId == placeId);
-            if (!s) return null;
-            const cat = categories.find(c => c.id == s.categoryId);
-            return cat ? cat.title : null;
-        }
-
-        // Tay Joylar
-        function renderTayJoylar() {
-            const container = document.getElementById('places-container');
-            container.innerHTML = '';
-            const places = getPlaces();
-
-            places.forEach((p, index) => {
-                const card = document.createElement('div');
-                card.className = `place-card ${currentUser === 'ega' ? '' : 'active-place'}`;
-                const statusClass = p.tolandi ? 'status-paid' : 'status-unpaid';
-                const statusText = p.tolandi ? 'To\'langan' : 'To\'lanmagan';
-
-                const productType = getProductTypeForPlace(p.id);
-
-                let actionsHTML = '';
-                if (currentUser === 'ega') {
-                    actionsHTML = `
-                        <div class="place-card-actions">
-                            <button class="icon-btn edit" style="width:24px;height:24px;font-size:12px;" onclick="event.stopPropagation(); editPlace(${index})" title="Tahrirlash"><i class="fas fa-pen"></i></button>
-                            <button class="icon-btn del" style="width:24px;height:24px;font-size:12px;" onclick="event.stopPropagation(); deletePlace(${index})" title="O'chirish"><i class="fas fa-trash"></i></button>
-                        </div>
-                    `;
-                }
-
-                card.innerHTML = `
-                    ${actionsHTML}
-                    <div class="clickable-area" onclick="togglePlace(${p.id})">
-                        <div class="place-id">${p.id}</div>
-                        <div class="place-price">${p.amount.toLocaleString('uz-UZ')} so'm</div>
-                        <div class="place-owner">Joy egasi: ${p.ownerName}</div>
-                        ${productType ? `<div class="place-product">Mahsulot turi: ${productType}</div>` : ''}
-                        <div class="status-badge ${statusClass}">${statusText}</div>
-                    </div>
-                `;
-
-                container.appendChild(card);
-            });
-            updateStats();
-        }
-
-        // Tay Joy Action: Click to toggle paid/unpaid
-        function togglePlace(id) {
-            const places = getPlaces();
-            const p = places.find(x => x.id === id);
-            if (p) {
-                p.tolandi = !p.tolandi;
-                savePlaces(places);
-                renderTayJoylar();
-            }
-        }
-
-        function editPlace(index) {
-            openPlaceModal(index);
-        }
-
-        // Tay Joy Action: Add/Edit - Joy egasi ismi avtomatik generatsiya qilinadi
-        function openPlaceModal(index = null) {
-            const form = document.getElementById('place-form');
-            form.reset();
-
-            if (index !== null) {
-                const places = getPlaces();
-                const p = places[index];
-                document.getElementById('place-modal-title').innerText = `${p.id}-joyni Tahrirlash`;
-                document.getElementById('place-index').value = index;
-                document.getElementById('place-price').value = p.amount;
-            } else {
-                document.getElementById('place-modal-title').innerText = 'Yangi Tay Joyi Qo\'shish';
-                document.getElementById('place-index').value = '';
-            }
-
-            document.getElementById('modal-place').classList.remove('hidden');
-        }
-
-        function savePlace(e) {
-            e.preventDefault();
-            const idxStr = document.getElementById('place-index').value;
-            const price = parseInt(document.getElementById('place-price').value);
-            
-            // Joy egasi ismi har doim avtomatik generatsiya qilinadi
-            const owner = getRandomOwnerName();
-
-            let places = getPlaces();
-
-            if (idxStr !== '') {
-                const idx = parseInt(idxStr);
-                places[idx].amount = price;
-                // Tahrirlashda ham yangi tasodifiy ism beriladi
-                places[idx].ownerName = owner;
-            } else {
-                const newId = places.length > 0 ? Math.max(...places.map(p => p.id)) + 1 : 1;
-                places.push({
-                    id: newId,
-                    amount: price,
-                    tolandi: false,
-                    ownerName: owner
-                });
-            }
-
-            savePlaces(places);
-            closeModal('modal-place');
-            renderTayJoylar();
-        }
-
-        function deletePlace(index) {
-            if (confirm("Rostdan ham ushbu joyni o'chirmoqchimisiz?")) {
-                let places = getPlaces();
-                const deletedPlaceId = places[index].id;
-                places.splice(index, 1);
-
-                let sellers = getSellers();
-                let dirtySellers = false;
-
-                const startLen = sellers.length;
-                sellers = sellers.filter(s => s.placeId !== deletedPlaceId);
-                if (sellers.length !== startLen) dirtySellers = true;
-
-                places.forEach((p, i) => {
-                    const oldId = p.id;
-                    const newId = i + 1;
-                    if (oldId !== newId) {
-                        p.id = newId;
-                        sellers.forEach(s => {
-                            if (s.placeId === oldId) {
-                                s.placeId = newId;
-                                dirtySellers = true;
-                            }
-                        });
-                    }
-                });
-
-                if (dirtySellers) {
-                    saveSellers(sellers);
-                }
-                savePlaces(places);
-                renderTayJoylar();
-            }
-        }
-
-        // Stats & Dashboard
-        function updateStats() {
-            const places = getPlaces();
-            let total = 0;
-            let paid = 0;
-
-            places.forEach(p => {
-                if (p.tolandi) {
-                    total += p.amount;
-                    paid++;
-                }
-            });
-
-            const unpaid = places.length - paid;
-
-            document.getElementById('stat-total').innerText = total.toLocaleString('uz-UZ') + " so'm";
-            document.getElementById('stat-paid').innerText = paid;
-            document.getElementById('stat-unpaid').innerText = unpaid;
-
-            const totalCount = places.length;
-            const pPerc = totalCount ? Math.round((paid / totalCount) * 100) : 0;
-            const uPerc = totalCount ? Math.round((unpaid / totalCount) * 100) : 0;
-
-            document.getElementById('bar-paid').style.height = Math.max(8, pPerc) + '%';
-            document.getElementById('val-paid').innerText = pPerc + '%';
-            document.getElementById('bar-unpaid').style.height = Math.max(8, uPerc) + '%';
-            document.getElementById('val-unpaid').innerText = uPerc + '%';
-        }
-
-        // Categories
-        function renderCategories() {
-            const container = document.getElementById('categories-container');
-            container.innerHTML = '';
-
-            categories.forEach(c => {
-                const card = document.createElement('div');
-                card.className = 'cat-card';
-                card.innerHTML = `
-                    <div class="cat-icon">${c.icon}</div>
-                    <div class="cat-title">${c.title}</div>
-                `;
-                card.addEventListener('click', () => openSellersModal(c));
-                container.appendChild(card);
-            });
-        }
-
-        // Sellers Data Logic
-        function getSellers() {
-            const s = localStorage.getItem('bozor_sellers');
-            return s ? JSON.parse(s) : [];
-        }
-
-        function saveSellers(sellers) {
-            localStorage.setItem('bozor_sellers', JSON.stringify(sellers));
-        }
-
-        function getSellerNameByPlaceId(placeId) {
-            const s = getSellers().find(x => x.placeId == placeId);
-            return s ? s.name : '';
-        }
-
-        // Modal Logic
-        function openSellersModal(category) {
-            document.getElementById('modal-cat-icon').innerText = category.icon;
-            document.getElementById('modal-cat-title').innerText = category.title;
-            document.getElementById('modal-sellers').dataset.categoryId = category.id;
-
-            const grid = document.getElementById('modal-sellers-grid');
-            grid.innerHTML = '';
-
-            const sellers = getSellers().filter(x => x.categoryId == category.id);
-            if (sellers.length === 0) {
-                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 2rem;">Ushbu bo\'limda sotuvchilar yo\'q</div>';
-            } else {
-                sellers.forEach((seller) => {
-                    const avatarSrc = seller.image
-                        ? `<img src="${seller.image}" style="width:64px; height:64px; border-radius:50%; object-fit:cover; margin-bottom:0.5rem;">`
-                        : `<div style="font-size: 3rem; margin-bottom: 0.5rem; color: var(--text-muted);"><i class="fas fa-user-circle"></i></div>`;
-
-                    const sellerHTML = `
-                        <div style="background: var(--card-bg); border-radius: var(--radius-md); padding: 1rem; text-align: center; border: 1px solid var(--border); position: relative;">
-                            ${currentUser === 'ega' ? `<button class="icon-btn del" style="position:absolute; top:4px; right:4px; width:24px; height:24px; font-size:12px;" onclick="deleteSeller(${seller.id}, ${category.id})" title="O'chirish"><i class="fas fa-times"></i></button>` : ''}
-                            ${avatarSrc}
-                            <div style="font-weight: 600; font-size: 0.875rem; margin-bottom: 0.25rem;">${seller.name}</div>
-                            <div style="font-size: 0.75rem; color: var(--primary); background: #e0e7ff; padding: 0.1rem 0.5rem; border-radius: 9999px; display: inline-block;">${seller.placeId}-joy</div>
-                        </div>
-                    `;
-                    grid.innerHTML += sellerHTML;
-                });
-            }
-
-            document.getElementById('modal-sellers').classList.remove('hidden');
-        }
-
-        function openSellerForm() {
-            const form = document.getElementById('seller-form');
-            form.reset();
-            const categoryId = document.getElementById('modal-sellers').dataset.categoryId;
-            document.getElementById('seller-category-id').value = categoryId;
-
-            const placesSelect = document.getElementById('seller-place');
-            placesSelect.innerHTML = '<option value="">Joyni tanlang</option>';
-            const places = getPlaces();
-            const sellers = getSellers();
-            places.forEach(p => {
-                const assigned = sellers.find(s => s.placeId == p.id);
-                const statusText = assigned ? '(Band)' : '(Bo\'sh)';
-                placesSelect.innerHTML += `<option value="${p.id}">${p.id}-joy - ${p.ownerName} ${statusText}</option>`;
-            });
-
-            document.getElementById('modal-seller-form').classList.remove('hidden');
-        }
-
-        function onPlaceChange() {
-            const placeId = document.getElementById('seller-place').value;
-            const nameInput = document.getElementById('seller-name');
-            if (placeId) {
-                const places = getPlaces();
-                const p = places.find(x => x.id == placeId);
-                nameInput.value = p ? p.ownerName : '';
-            } else {
-                nameInput.value = '';
-            }
-        }
-
-        function saveSeller(e) {
-            e.preventDefault();
-            const categoryId = document.getElementById('seller-category-id').value;
-            const placeId = document.getElementById('seller-place').value;
-            const name = document.getElementById('seller-name').value;
-            const fileInput = document.getElementById('seller-image');
-
-            const save = (imgData) => {
-                const sellers = getSellers();
-                const newId = new Date().getTime();
-
-                const existingIdx = sellers.findIndex(s => s.placeId == placeId);
-                if (existingIdx !== -1) {
-                    sellers.splice(existingIdx, 1);
-                }
-
-                sellers.push({
-                    id: newId,
-                    categoryId: parseInt(categoryId),
-                    placeId: parseInt(placeId),
-                    name: name,
-                    image: imgData
-                });
-                saveSellers(sellers);
-                closeModal('modal-seller-form');
-
-                const category = categories.find(c => c.id == categoryId);
-                openSellersModal(category);
-            };
-
-            if (fileInput.files && fileInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = (ev) => save(ev.target.result);
-                reader.readAsDataURL(fileInput.files[0]);
-            } else {
-                save(undefined);
-            }
-        }
-
-        function deleteSeller(sellerId, categoryId) {
-            if (confirm("Sotuvchini (joyni) ushbu bo'limdan o'chirishni tasdiqlaysizmi?")) {
-                let sellers = getSellers();
-                sellers = sellers.filter(s => s.id !== sellerId);
-                saveSellers(sellers);
-                const category = categories.find(c => c.id == categoryId);
-                openSellersModal(category);
-            }
-        }
-
-        function closeModal(id) {
-            document.getElementById(id).classList.add('hidden');
-        }
-
-        // Employees
-        function getEmployees() {
-            const e = localStorage.getItem('bozor_emps');
-            if (e) return JSON.parse(e);
-            const initial = [
-                { id: 1, name: 'Ali Valiyev', role: 'Menejer', image: null },
-                { id: 2, name: 'Olima Turova', role: 'Kassir', image: null }
-            ];
-            localStorage.setItem('bozor_emps', JSON.stringify(initial));
-            return initial;
-        }
-
-        function saveEmployees(emps) {
-            localStorage.setItem('bozor_emps', JSON.stringify(emps));
-        }
-
-        function renderEmployees() {
-            const tbody = document.getElementById('employees-tbody');
-            tbody.innerHTML = '';
-            const emps = getEmployees();
-
-            emps.forEach((emp, index) => {
-                const tr = document.createElement('tr');
-                const imgHtml = emp.image
-                    ? `<img src="${emp.image}" style="width:32px; height:32px; border-radius:50%; object-fit:cover; margin-right:8px; vertical-align:middle;">`
-                    : `<i class="fas fa-user-circle" style="font-size:32px; color:var(--text-muted); margin-right:8px; vertical-align:middle;"></i>`;
-
-                tr.innerHTML = `
-                    <td style="font-weight: 500;">${emp.id}</td>
-                    <td style="display: flex; align-items: center;">${imgHtml} <span style="font-weight: 500;">${emp.name}</span></td>
-                    <td><span class="badge-role">${emp.role}</span></td>
-                    <td>
-                        <div class="flex gap-4" style="justify-content: flex-end; gap:0.5rem;">
-                            <button class="icon-btn edit" onclick="editEmp(${index})"><i class="fas fa-pen"></i></button>
-                            <button class="icon-btn del" onclick="deleteEmp(${index})"><i class="fas fa-trash"></i></button>
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function openEmployeeModal(index = null) {
-            const form = document.getElementById('emp-form');
-            form.reset();
-
-            if (index !== null) {
-                const emps = getEmployees();
-                const emp = emps[index];
-                document.getElementById('emp-modal-title').innerText = 'Xodimni tahrirlash';
-                document.getElementById('emp-index').value = index;
-                document.getElementById('emp-name').value = emp.name;
-                document.getElementById('emp-role').value = emp.role;
-            } else {
-                document.getElementById('emp-modal-title').innerText = 'Yangi xodim qo\'shish';
-                document.getElementById('emp-index').value = '';
-            }
-
-            document.getElementById('modal-employee').classList.remove('hidden');
-        }
-
-        function saveEmployee(e) {
-            e.preventDefault();
-            const idxStr = document.getElementById('emp-index').value;
-            const name = document.getElementById('emp-name').value;
-            const role = document.getElementById('emp-role').value;
-            const fileInput = document.getElementById('emp-image');
-
-            const save = (imgData) => {
-                const emps = getEmployees();
-
-                if (idxStr !== '') {
-                    const idx = parseInt(idxStr);
-                    emps[idx].name = name;
-                    emps[idx].role = role;
-                    if (imgData !== undefined) emps[idx].image = imgData;
-                } else {
-                    emps.push({ id: 0, name, role, image: imgData });
-                }
-
-                emps.forEach((e, i) => e.id = i + 1);
-
-                saveEmployees(emps);
-                closeModal('modal-employee');
-                renderEmployees();
-            };
-
-            if (fileInput.files && fileInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = (ev) => save(ev.target.result);
-                reader.readAsDataURL(fileInput.files[0]);
-            } else {
-                save(undefined);
-            }
-        }
-
-        function editEmp(index) {
-            openEmployeeModal(index);
-        }
-
-        function deleteEmp(index) {
-            if (confirm('Rostdan ham ushbu xodimni o\'chirmoqchimisiz?')) {
-                let emps = getEmployees();
-                emps.splice(index, 1);
-                emps.forEach((e, i) => {
-                    e.id = i + 1;
-                });
-                saveEmployees(emps);
-                renderEmployees();
-            }
-        }
-
-        // Start App
-        window.addEventListener('DOMContentLoaded', initApp);
-
-        // Click to close modals when clicking outside modal card
-        document.querySelectorAll('.overlay').forEach(overlay => {
-            overlay.addEventListener('click', (e) => {
-                if (e.target === overlay) {
-                    overlay.classList.add('hidden');
-                }
-            });
         });
     </script>
 </body>
