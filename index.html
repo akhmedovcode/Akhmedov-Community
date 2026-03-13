@@ -3,954 +3,1538 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Davomat Tizimi</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bir martalik Messenger</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- PeerJS for WebRTC cross-browser/device communication -->
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
         :root {
-            --primary: #4f46e5;
-            --primary-hover: #4338ca;
-            --bg: #f3f4f6;
-            --surface: #ffffff;
-            --text-main: #111827;
-            --text-muted: #6b7280;
-            --border: #e5e7eb;
-            --danger: #ef4444;
-            --success: #10b981;
-            --warning: #f59e0b;
+            --primary: #10B981;
+            /* Emerald Green */
+            --primary-dark: #059669;
+            --primary-light: #D1FAE5;
+            --bg-color: #F3F4F6;
+            --white: #FFFFFF;
+            --text-dark: #1F2937;
+            --text-gray: #6B7280;
+            --border: #E5E7EB;
+            --danger: #EF4444;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --radius-md: 0.5rem;
+            --radius-lg: 1rem;
+            --radius-full: 9999px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background-color: var(--bg);
-            color: var(--text-main);
-            margin: 0;
-            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            height: 100vh;
             display: flex;
-            flex-direction: column;
-            min-height: 100vh;
+            justify-content: center;
+            overflow: hidden;
         }
 
-        header {
-            background-color: var(--primary);
-            color: white;
-            padding: 2rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-
-        header h1 {
-            margin: 0;
-            font-size: 2.2rem;
-            font-weight: 700;
-            letter-spacing: -0.025em;
-        }
-
-        main {
-            flex: 1;
-            padding: 2rem;
-            max-width: 1200px;
-            margin: 2rem auto;
-            /* Removed negative margin to fix the overlapping issue */
+        .app-container {
             width: 100%;
-            box-sizing: border-box;
+            max-width: 480px;
+            background-color: var(--white);
+            height: 100vh;
             position: relative;
-            z-index: 10;
-        }
-
-        .card {
-            background: var(--surface);
-            border-radius: 16px;
-            padding: 2rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            margin-bottom: 2rem;
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .card h2 {
-            margin: 0;
-            font-size: 1.25rem;
-            color: var(--text-main);
-        }
-
-        .date-selector {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: #f9fafb;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-        }
-
-        .date-selector label {
-            font-weight: 600;
-            color: var(--text-muted);
-            font-size: 0.875rem;
-        }
-
-        .date-selector input {
-            border: none;
-            background: transparent;
-            font-family: inherit;
-            font-size: 1rem;
-            color: var(--text-main);
-            outline: none;
-            cursor: pointer;
-        }
-
-        .form-group {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .input-control {
-            flex: 1;
-            min-width: 200px;
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
+            box-shadow: var(--shadow-2xl);
+            overflow: hidden;
         }
 
-        .input-control label {
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: var(--text-muted);
+        /* Utility */
+        .hidden {
+            display: none !important;
         }
 
-        .input-control input {
-            padding: 0.75rem 1rem;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 1rem;
-            outline: none;
-            transition: all 0.2s;
-            background-color: #f9fafb;
-        }
-
-        .input-control input:focus {
-            border-color: var(--primary);
-            background-color: #fff;
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
-        }
-
-        .btn-wrapper {
+        .flex {
             display: flex;
-            align-items: flex-end;
+        }
+
+        .flex-col {
+            flex-direction: column;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .justify-center {
+            justify-content: center;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+        }
+
+        .flex-1 {
+            flex: 1;
+            overflow-y: auto;
         }
 
         button {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            background-color: var(--primary);
-            color: white;
+            cursor: pointer;
             border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.3);
-            height: 46px;
+            outline: none;
+            background: none;
+            font-family: inherit;
         }
 
-        button:hover {
-            background-color: var(--primary-hover);
-            transform: translateY(-1px);
-            box-shadow: 0 6px 8px -1px rgba(79, 70, 229, 0.4);
-        }
-
-        button:active {
-            transform: translateY(0);
-        }
-
-        button.icon-btn {
-            padding: 0.4rem;
-            height: auto;
-            border-radius: 6px;
-            box-shadow: none;
-            background-color: transparent;
-        }
-
-        button.icon-btn.danger {
-            color: var(--danger);
-        }
-
-        button.icon-btn.danger:hover {
-            background-color: #fef2f2;
-        }
-
-        button.icon-btn.warning {
-            color: var(--warning);
-        }
-
-        button.icon-btn.warning:hover {
-            background-color: #fffbeb;
-        }
-
-        button.icon-btn.present-active {
-            background-color: var(--success);
-            color: white;
-            border-radius: 6px;
-        }
-
-        button.icon-btn.present-active:hover {
-            background-color: #059669;
-        }
-
-        button.icon-btn.absent-active {
-            background-color: var(--danger);
-            color: white;
-            border-radius: 6px;
-        }
-
-        button.icon-btn.absent-active:hover {
-            background-color: #dc2626;
-        }
-
-        button.icon-btn.secondary {
-            color: var(--text-muted);
-        }
-
-        button.icon-btn.secondary:hover {
-            background-color: #f3f4f6;
-        }
-
-        .table-container {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            margin-top: 1rem;
-        }
-
-        th,
-        td {
-            text-align: center;
-            padding: 0.75rem 0.5rem;
+        /* Headers */
+        .header {
+            padding: 1rem 1.5rem;
+            background-color: var(--white);
             border-bottom: 1px solid var(--border);
-            vertical-align: middle;
-        }
-
-        td.text-left,
-        th.text-left {
-            text-align: left;
-        }
-
-        th {
-            font-weight: 600;
-            color: var(--text-muted);
-            font-size: 0.75rem;
-            background-color: #f9fafb;
-        }
-
-        th:first-child {
-            border-top-left-radius: 8px;
-        }
-
-        th:last-child {
-            border-top-right-radius: 8px;
-        }
-
-        tr:hover td {
-            background-color: #f9fafb;
-        }
-
-        .actions {
-            display: flex;
-            gap: 0.25rem;
-            justify-content: flex-end;
-        }
-
-        /* Monthly Attendance Cell Styles */
-        .day-cell {
-            cursor: pointer;
-            min-width: 28px;
-            height: 28px;
-            margin: 0 auto;
-            border-radius: 4px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 0.8rem;
-            transition: all 0.2s;
-            background-color: transparent;
-            color: transparent;
-            user-select: none;
+            justify-content: space-between;
+            z-index: 10;
         }
 
-        .day-cell:hover {
-            background-color: #e5e7eb;
-        }
-
-        .day-cell.present {
-            background-color: #d1fae5;
-            color: var(--success);
-        }
-
-        .day-cell.present:hover {
-            background-color: #a7f3d0;
-        }
-
-        .day-cell.absent {
-            background-color: #fee2e2;
-            color: var(--danger);
-        }
-
-        .day-cell.absent:hover {
-            background-color: #fecaca;
-        }
-
-        footer {
-            text-align: center;
-            padding: 2rem;
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            border-top: 1px solid var(--border);
-            background: var(--surface);
-            font-weight: 500;
-        }
-
-        .footer-name {
-            color: var(--primary);
+        .header h1 {
+            font-size: 1.25rem;
             font-weight: 600;
+            color: var(--text-dark);
         }
 
-        /* Modal classes */
-        .modal-overlay {
-            position: fixed;
+        /* Screens */
+        .screen {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
+            position: absolute;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(17, 24, 39, 0.7);
+            background: var(--white);
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        /* Onboarding Screen */
+        #onboarding-screen {
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            text-align: center;
+            background: linear-gradient(135deg, var(--white) 0%, var(--primary-light) 100%);
+        }
+
+        .logo-circle {
+            width: 80px;
+            height: 80px;
+            background-color: var(--primary);
+            color: var(--white);
+            border-radius: var(--radius-full);
             display: flex;
             align-items: center;
             justify-content: center;
-            visibility: hidden;
-            opacity: 0;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 50;
-            backdrop-filter: blur(4px);
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-lg);
         }
 
-        .modal-overlay.active {
-            visibility: visible;
-            opacity: 1;
+        .id-display {
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--primary-dark);
+            margin: 1rem 0;
+            padding: 1rem 2rem;
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            border: 2px dashed var(--primary);
         }
 
-        .modal {
-            background: white;
-            padding: 2rem;
-            border-radius: 16px;
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 1rem 2rem;
+            border-radius: var(--radius-full);
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-top: 2rem;
             width: 100%;
-            max-width: 450px;
-            transform: scale(0.95) translateY(10px);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s;
+            box-shadow: var(--shadow-md);
         }
 
-        .modal-overlay.active .modal {
-            transform: scale(1) translateY(0);
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
         }
 
-        .modal h2 {
-            margin-top: 0;
-            margin-bottom: 1.5rem;
-            font-size: 1.25rem;
+        /* Chat List Screen */
+        .chat-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            overflow-y: auto;
+            flex: 1;
+            padding-bottom: 80px;
+            /* Space for nav */
         }
 
-        .modal-footer {
+        .chat-item {
             display: flex;
-            justify-content: flex-end;
-            gap: 1rem;
-            margin-top: 1.5rem;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background-color 0.2s;
         }
 
-        .modal-footer button.cancel {
-            background-color: white;
-            color: var(--text-main);
-            border: 1px solid var(--border);
-            box-shadow: none;
+        .chat-item:hover {
+            background-color: var(--bg-color);
         }
 
-        .modal-footer button.cancel:hover {
-            background-color: #f3f4f6;
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: var(--radius-full);
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.25rem;
+            margin-right: 1rem;
+        }
+
+        .chat-info {
+            flex: 1;
+        }
+
+        .chat-name {
+            font-weight: 600;
+            font-size: 1.125rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .chat-preview {
+            color: var(--text-gray);
+            font-size: 0.875rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
         }
 
         .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            color: var(--text-gray);
             text-align: center;
-            padding: 3rem 1rem;
-            color: var(--text-muted);
+            padding: 2rem;
         }
 
-        .empty-state svg {
-            width: 64px;
-            height: 64px;
-            color: #d1d5db;
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--border);
             margin-bottom: 1rem;
         }
 
-        .student-name-wrapper {
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 70px;
+            background-color: var(--white);
+            box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 1rem;
+            z-index: 20;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+        }
+
+        .nav-item {
             display: flex;
             flex-direction: column;
-            gap: 0.2rem;
+            align-items: center;
+            color: var(--text-gray);
+            font-size: 1.5rem;
+            transition: color 0.2s;
+            position: relative;
+            flex: 1;
         }
 
-        .student-name {
-            font-weight: 600;
-            color: var(--text-main);
-            white-space: nowrap;
-        }
-
-        .student-phone {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        .months-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .month-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            padding: 1.5rem 1rem;
-            border-radius: 12px;
-            text-align: center;
-            cursor: pointer;
-            font-weight: 600;
-            color: var(--text-main);
-            transition: all 0.2s;
-        }
-
-        .month-card:hover {
-            border-color: var(--primary);
-            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.1);
-            transform: translateY(-2px);
+        .nav-item.active {
             color: var(--primary);
         }
 
-        #month-modal .modal {
-            max-width: 1000px;
-            width: 95%;
-            max-height: 90vh;
+        /* Floating Action Button */
+        .fab-wrapper {
+            position: relative;
+            top: -20px;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
+            flex: 1;
         }
 
-        #month-modal .table-container {
+        .fab {
+            width: 60px;
+            height: 60px;
+            background-color: var(--primary);
+            color: var(--white);
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            box-shadow: 0 8px 15px rgba(16, 185, 129, 0.4);
+            transition: transform 0.2s;
+            border: 4px solid var(--white);
+        }
+
+        .fab:hover {
+            transform: scale(1.05);
+        }
+
+        /* Profile Screen */
+        #profile-screen {
+            padding-bottom: 80px;
+        }
+
+        .profile-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 3rem 2rem;
+            background: linear-gradient(to bottom, var(--primary-light), var(--white));
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: var(--radius-full);
+            background-color: var(--primary);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .profile-id {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            letter-spacing: 1px;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: var(--white);
+            width: 90%;
+            max-width: 340px;
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            box-shadow: var(--shadow-2xl);
+            transform: translateY(20px);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .input-group {
+            margin: 1.5rem 0;
+        }
+
+        .id-input {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.5rem;
+            text-align: center;
+            letter-spacing: 4px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .id-input:focus {
+            border-color: var(--primary);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn-cancel {
+            flex: 1;
+            padding: 0.75rem;
+            background: var(--bg-color);
+            color: var(--text-dark);
+            border-radius: var(--radius-md);
+            font-weight: 600;
+        }
+
+        .btn-confirm {
+            flex: 1;
+            padding: 0.75rem;
+            background: var(--primary);
+            color: var(--white);
+            border-radius: var(--radius-md);
+            font-weight: 600;
+        }
+
+        /* Chat View Screen */
+        #chat-view-screen {
+            z-index: 30;
+        }
+
+        .chat-header {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .back-btn {
+            font-size: 1.25rem;
+            color: var(--text-dark);
+            margin-right: 1rem;
+            padding: 0.5rem;
+        }
+
+        .messages-container {
+            flex: 1;
+            padding: 1rem;
+            background: var(--bg-color);
             overflow-y: auto;
-            max-height: calc(90vh - 120px);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 0.75rem 1rem;
+            border-radius: 1rem;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+            word-wrap: break-word;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.sent {
+            align-self: flex-end;
+            background-color: var(--primary);
+            color: var(--white);
+            border-bottom-right-radius: 0.25rem;
+        }
+
+        .message.received {
+            align-self: flex-start;
+            background-color: var(--white);
+            color: var(--text-dark);
+            border-bottom-left-radius: 0.25rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .msg-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.25rem;
+            font-size: 0.75rem;
+            justify-content: flex-end;
+            opacity: 0.7;
+        }
+
+        .msg-actions button {
+            color: inherit;
+        }
+
+        .msg-actions button:hover {
+            opacity: 1;
+        }
+
+        .chat-input-area {
+            padding: 1rem;
+            background: var(--white);
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: var(--text-gray);
+            background: transparent;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            background: var(--bg-color);
+            color: var(--primary);
+        }
+
+        .action-btn.recording {
+            color: var(--danger);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-full);
+            outline: none;
+            font-size: 1rem;
+        }
+
+        .chat-input:focus {
+            border-color: var(--primary);
+        }
+
+        .chat-input:disabled {
+            background: var(--bg-color);
+        }
+
+        .send-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: var(--radius-full);
+            background: var(--primary);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            transition: background 0.2s;
+        }
+
+        .send-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .msg-image {
+            max-width: 100%;
+            border-radius: 0.5rem;
+            margin-top: 0.25rem;
+        }
+
+        .img-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 5px;
+            margin-top: 0.25rem;
+        }
+
+        .img-grid img {
+            width: 100%;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 0.5rem;
+        }
+
+        .msg-audio {
+            max-width: 220px;
+            height: 40px;
+            margin-top: 0.25rem;
+            outline: none;
+        }
+
+        .msg-time {
+            font-size: 0.65rem;
+            opacity: 0.7;
+            text-align: right;
+            margin-top: 4px;
+        }
+
+        .unread-badge {
+            background-color: var(--danger);
+            color: var(--white);
+            font-size: 0.75rem;
+            font-weight: bold;
+            border-radius: var(--radius-full);
+            min-width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 6px;
+            margin-left: auto;
+        }
+
+        .image-preview-area {
+            padding: 0.5rem 1rem;
+            background: var(--bg-color);
+            border-top: 1px solid var(--border);
+            display: none;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 10px;
+            overflow-x: auto;
+        }
+
+        .image-preview-area.active {
+            display: flex;
+        }
+
+        .preview-item {
+            position: relative;
+            display: inline-block;
+        }
+
+        .image-preview-thumb {
+            height: 60px;
+            min-width: 60px;
+            object-fit: cover;
+            border-radius: var(--radius-md);
+            border: 2px solid var(--primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .remove-media-btn {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 20px;
+            height: 20px;
+            background: var(--danger);
+            color: var(--white);
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        .add-more-img-btn {
+            height: 60px;
+            width: 60px;
+            border-radius: var(--radius-md);
+            border: 2px dashed var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .edited-tag {
+            font-size: 0.65rem;
+            opacity: 0.6;
+            font-style: italic;
+            margin-right: 5px;
         }
     </style>
 </head>
 
 <body>
 
-    <header>
-        <div style="max-width: 1200px; margin: 0 auto;">
-            <h1>Xush kelibsiz, Xusniddin!</h1>
-            <p style="color: #e0e7ff; margin-top: 0.5rem; font-size: 1.1rem;">Davomat va o'quvchilarni boshqarish tizimi
+    <div class="app-container">
+
+        <!-- 1. Onboarding Screen -->
+        <div id="onboarding-screen" class="screen active">
+            <div class="logo-circle">
+                <i class="fa-solid fa-bolt"></i>
+            </div>
+            <h2>Xush kelibsiz!</h2>
+            <p style="color: var(--text-gray); margin-top: 0.5rem;">Sizning maxfiy bir martalik ID raqamingiz:</p>
+
+            <div class="id-display" id="generated-id">
+                000-000
+            </div>
+
+            <p style="color: var(--text-gray); font-size: 0.875rem; margin-top: 1rem;">
+                Ushbu ID orqali boshqalar siz bilan bog'lanishi mumkin.
             </p>
-        </div>
-    </header>
 
-    <main>
-        <div class="card">
-            <h2>Yangi o'quvchi qo'shish</h2>
-            <form id="add-form" class="form-group" onsubmit="addStudent(event)">
-                <div class="input-control">
-                    <label for="first-name">Ism</label>
-                    <input type="text" id="first-name" placeholder="Masalan: Alisher" required>
-                </div>
-                <div class="input-control">
-                    <label for="last-name">Familiya</label>
-                    <input type="text" id="last-name" placeholder="Masalan: Navoiy" required>
-                </div>
-                <div class="input-control">
-                    <label for="phone">Telefon raqam</label>
-                    <input type="tel" id="phone" placeholder="+998 90 123 45 67" required>
-                </div>
-                <div class="btn-wrapper">
-                    <button type="submit">Qo'shish</button>
-                </div>
-            </form>
+            <button class="btn-primary" onclick="startApp()">ID ni olish va Boshlash</button>
         </div>
 
-        <div class="card">
-            <div class="card-header">
-                <h2>O'quvchilar ro'yxati va Bugungi Davomat</h2>
+        <!-- 2. Chat List Screen -->
+        <div id="chat-list-screen" class="screen">
+            <div class="header">
+                <h1>Xabarlar</h1>
             </div>
 
-            <div style="margin-bottom: 1rem; font-size: 0.85rem; color: #6b7280;">
-                Bugungi davomatni belgilash: Yashil belgi (✔) - <b>Bor</b>, Qizil belgi (✖) - <b>Yo'q</b>
+            <div id="empty-chat-state" class="empty-state">
+                <i class="fa-regular fa-comments"></i>
+                <h3>Suhbatlar yo'q</h3>
+                <p>Yangi suhbat boshlash uchun + tugmasini bosing</p>
             </div>
 
-            <div class="table-container">
-                <table id="students-table">
-                    <thead id="table-head">
-                        <!-- Headers injected by JS -->
-                    </thead>
-                    <tbody id="students-list">
-                        <!-- Students injected here by JS -->
-                    </tbody>
-                </table>
-                <div id="empty-message" class="empty-state" style="display: none;">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
-                        </path>
-                    </svg>
-                    <h3>O'quvchilar yo'q</h3>
-                    <p>Ro'yxatda hozircha o'quvchilar mavjud emas. Yuqoridagi shakldan yangi o'quvchi qo'shing.</p>
+            <ul class="chat-list" id="chat-list">
+                <!-- Chats will be appended here -->
+            </ul>
+        </div>
+
+        <!-- 3. Profile Screen -->
+        <div id="profile-screen" class="screen">
+            <div class="header">
+                <h1>Profil</h1>
+            </div>
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <i class="fa-solid fa-user-secret"></i>
                 </div>
+                <p style="color: var(--text-gray); margin-bottom: 0.5rem;">Sizning ID raqamingiz</p>
+                <div class="profile-id" id="profile-id-display">000-000</div>
+            </div>
+            <div style="padding: 2rem;">
+                <button class="btn-primary" style="background-color: var(--danger);" onclick="resetApp()">
+                    <i class="fa-solid fa-right-from-bracket" style="margin-right: 0.5rem;"></i> Chiqish va O'chirish
+                </button>
             </div>
         </div>
 
-        <div class="card">
-            <h2>Oylar bo'yicha davomat</h2>
-            <div class="months-grid" id="months-grid">
-                <!-- Oylar JS orqali qo'shiladi -->
+        <!-- 4. Chat View Screen -->
+        <div id="chat-view-screen" class="screen">
+            <div class="chat-header">
+                <button class="back-btn" onclick="closeChat()">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+                <div class="avatar" style="width: 40px; height: 40px; font-size: 1rem;" id="current-chat-avatar">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <h2 id="current-chat-name" style="font-size: 1.125rem; font-weight: 600;">000-000</h2>
             </div>
-        </div>
-    </main>
 
-    <footer>
-        <span class="footer-name">Abbos Akhmedov</span> tomonidan yaratilgan
-    </footer>
+            <div class="messages-container" id="messages-container">
+                <!-- Messages -->
+            </div>
 
-    <!-- Modal for Edit -->
-    <div class="modal-overlay" id="edit-modal">
-        <div class="modal">
-            <h2>O'quvchini tahrirlash</h2>
-            <form id="edit-form" onsubmit="saveEdit(event)">
-                <input type="hidden" id="edit-id">
-                <div class="input-control" style="margin-bottom: 1rem;">
-                    <label for="edit-first-name">Ism</label>
-                    <input type="text" id="edit-first-name" required>
-                </div>
-                <div class="input-control" style="margin-bottom: 1rem;">
-                    <label for="edit-last-name">Familiya</label>
-                    <input type="text" id="edit-last-name" required>
-                </div>
-                <div class="input-control" style="margin-bottom: 1.5rem;">
-                    <label for="edit-phone">Telefon raqam</label>
-                    <input type="tel" id="edit-phone" required>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="cancel" onclick="closeModal()">Bekor qilish</button>
-                    <button type="submit">Saqlash</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal for Month Attendance -->
-    <div class="modal-overlay" id="month-modal">
-        <div class="modal">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                <h2 id="month-modal-title" style="margin: 0;"></h2>
-                <button class="icon-btn" onclick="closeMonthModal()" style="color: var(--text-muted);">
-                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
-                        </path>
-                    </svg>
+            <div id="image-preview-area" class="image-preview-area">
+                <div id="preview-list" style="display: flex; gap: 10px;"></div>
+                <button class="add-more-img-btn hidden" id="add-more-img" onclick="triggerImageUpload()"><i class="fa-solid fa-plus"></i></button>
+                <div style="flex: 1;"></div>
+                <button class="action-btn" style="color: var(--danger);" onclick="cancelMediaPreview()">
+                    <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
 
-            <div style="margin-bottom: 1rem; font-size: 0.85rem; color: #6b7280;">
-                Ma'lumot berish uchun katakchani bosing: 1 marta bosish - <b>Bor (✔)</b>, 2 marta - <b>Yo'q (✖)</b>
+            <div class="chat-input-area">
+                <button class="action-btn" onclick="triggerImageUpload()">
+                    <i class="fa-solid fa-image"></i>
+                </button>
+                <input type="file" id="image-upload" accept="image/*" class="hidden" onchange="sendImage(event)">
+
+                <input type="text" id="message-input" class="chat-input" placeholder="Xabar yozing..."
+                    autocomplete="off">
+                <button class="action-btn" id="mic-btn" onclick="toggleRecording()">
+                    <i class="fa-solid fa-microphone"></i>
+                </button>
+                <button class="send-btn" onclick="sendMessage()">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div id="bottom-nav" class="bottom-nav hidden">
+            <button class="nav-item active" onclick="switchTab('chat-list-screen', this)">
+                <i class="fa-solid fa-message"></i>
+            </button>
+
+            <div class="fab-wrapper">
+                <button class="fab" onclick="openNewChatModal()">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
             </div>
 
-            <div class="table-container" style="flex: 1;">
-                <table id="modal-table">
-                    <thead id="modal-table-head"></thead>
-                    <tbody id="modal-students-list"></tbody>
-                </table>
-                <div id="modal-empty-message" class="empty-state" style="display: none;">
-                    <h3>O'quvchilar yo'q</h3>
+            <button class="nav-item" onclick="switchTab('profile-screen', this)">
+                <i class="fa-solid fa-user"></i>
+            </button>
+        </div>
+
+        <!-- New Chat Modal -->
+        <div id="new-chat-modal" class="modal-overlay">
+            <div class="modal-content">
+                <h3 style="text-align: center; margin-bottom: 0.5rem;">Yangi Suhbat</h3>
+                <p style="text-align: center; color: var(--text-gray); font-size: 0.875rem;">
+                    Suhbatdoshning 6 xonali ID raqamini kiriting.
+                </p>
+                <div class="input-group">
+                    <input type="text" id="peer-id-input" class="id-input" placeholder="___-___" maxlength="7"
+                        oninput="formatIdInput(this)">
+                </div>
+                <p id="new-chat-error"
+                    style="color: var(--danger); font-size: 0.875rem; text-align: center; display: none; margin-bottom: 1rem;">
+                </p>
+                <div class="modal-actions">
+                    <button class="btn-cancel" onclick="closeNewChatModal()">Bekor qilish</button>
+                    <button class="btn-confirm" onclick="startNewChat()">Suhbatlashish</button>
                 </div>
             </div>
         </div>
+
     </div>
 
     <script>
-        // State
-        let students = JSON.parse(localStorage.getItem('attendance_students')) || [];
-        let attendance = JSON.parse(localStorage.getItem('attendance_records')) || {};
-        // Example: { "2026-03-08": { studentId1: "present", studentId2: "absent" } }
+        // State (Only in memory, completely one-time session)
+        let myId = '';
+        let chats = {}; // Key: peerId, Value: array of messages
+        let currentActiveChatId = null;
+        let editingMessageId = null;
+        let unreadCounts = {};
+        
+        // PeerJS variables
+        let peer;
+        let connections = {}; // Key: peerId, Value: PeerJS Connection object
+        let pendingConnectionTimeout = null;
 
-        // Setup initial variables
+        let pendingMedia = { type: null, images: [], audio: null };
 
-        // DOM elements
-        const tableHead = document.getElementById('table-head');
-        const studentsList = document.getElementById('students-list');
-        const emptyMessage = document.getElementById('empty-message');
-        const studentsTable = document.getElementById('students-table');
-        const editModal = document.getElementById('edit-modal');
+        let mediaRecorder;
+        let audioChunks = [];
+        let isRecording = false;
 
-        // Initial render
-        renderStudents();
+        // Data Models
+        // message = { id: string, type: 'text'|'image'|'audio', content: string (text, base64 url, objectUrl), sender: 'me' | 'peer', timestamp: number }
 
-        function getDaysInMonth(year, monthIndex) {
-            return new Date(year, monthIndex, 0).getDate();
+        function generateId() {
+            const p1 = Math.floor(100 + Math.random() * 900);
+            const p2 = Math.floor(100 + Math.random() * 900);
+            return `${p1}-${p2}`;
         }
 
-        let activeModalYear = null;
-        let activeModalMonth = null;
+        // Initialization
+        window.onload = () => {
+            // generate fresh ID every entry
+            myId = generateId();
+            document.getElementById('generated-id').textContent = myId;
+            document.getElementById('profile-id-display').textContent = myId;
 
-        function toggleAttendance(studentId, day, isModal = false, modalYear = null, modalMonth = null) {
-            let yearMonth = '';
-            if (isModal && modalYear && modalMonth) {
-                yearMonth = `${modalYear}-${String(modalMonth).padStart(2, '0')}`;
+            // Qo'shimcha mahalliy himoya (faqat huddi shu brauzerdagilar uchun 100% ishlashi uchun)
+            let activeIds = JSON.parse(localStorage.getItem('webmessage_active_ids') || '[]');
+            if (!activeIds.includes(myId)) {
+                activeIds.push(myId);
+                localStorage.setItem('webmessage_active_ids', JSON.stringify(activeIds));
+            }
+
+            localStorage.setItem('webmessage_beat_' + myId, Date.now());
+            setInterval(() => {
+                localStorage.setItem('webmessage_beat_' + myId, Date.now());
+            }, 2000);
+
+            // Initialize PeerJS
+            peer = new Peer(myId, {
+                debug: 2
+            });
+
+            peer.on('open', (id) => {
+                console.log('PeerJS ulangan ID: ' + id);
+            });
+
+            peer.on('disconnected', () => {
+                peer.reconnect();
+            });
+
+            // Kimdir bizga ulansa (kiruvchi ulanish)
+            peer.on('connection', (conn) => {
+                setupConnection(conn);
+            });
+
+            // Peer ulanishda xato bo'lsa
+            peer.on('error', (err) => {
+                console.error('PeerJS xato:', err.type, err);
+                const btn = document.querySelector('.btn-confirm');
+                const errMsg = document.getElementById('new-chat-error');
+
+                const isActivelySearching = btn && btn.disabled;
+
+                if (err.type === 'peer-unavailable') {
+                    // Mahalliy pulseni tekshiramiz
+                    const searchId = document.getElementById('peer-id-input')?.value;
+                    const lastBeat = searchId ? localStorage.getItem('webmessage_beat_' + searchId) : null;
+                    
+                    if (searchId && lastBeat && (Date.now() - parseInt(lastBeat)) <= 5000) {
+                        if (btn) { btn.disabled = false; btn.textContent = 'Suhbatlashish'; }
+                        if (!chats[searchId]) chats[searchId] = [];
+                        connections[searchId] = { isLocalOnly: true };
+                        closeNewChatModal();
+                        openChat(searchId);
+                        renderChatList();
+                        return; 
+                    }
+                    
+                    if (isActivelySearching) {
+                        if (errMsg) { errMsg.textContent = "Bunday ID mavjud emas!"; errMsg.style.display = 'block'; }
+                        if (btn) { btn.disabled = false; btn.textContent = 'Suhbatlashish'; }
+                    }
+
+                } else if (err.type === 'network' || err.type === 'server-error' || err.type === 'browser-incompatible') {
+                    if (isActivelySearching) {
+                        if (errMsg) { errMsg.textContent = "Internet yoki serverda uzilish bo'ldi. Qayta urinib ko'ring!"; errMsg.style.display = 'block'; }
+                        if (btn) { btn.disabled = false; btn.textContent = 'Suhbatlashish'; }
+                    }
+                    setTimeout(() => { if (peer && peer.disconnected && !peer.destroyed) peer.reconnect(); }, 1500);
+                }
+            });
+        };
+
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'webmessage_broadcast' && e.newValue) {
+                const data = JSON.parse(e.newValue);
+                if (data.recipient === myId) {
+                    processIncomingMessage(data);
+                }
+            }
+        });
+
+        function processIncomingMessage(data) {
+            const peerId = data.sender;
+            if (!chats[peerId]) {
+                chats[peerId] = [];
+            }
+
+            let updatedExists = false;
+            let existingIdx = chats[peerId].findIndex(m => m.id === data.id);
+            if (existingIdx !== -1) {
+                chats[peerId][existingIdx] = {
+                    id: data.id,
+                    type: data.type,
+                    content: data.content,
+                    caption: data.caption,
+                    sender: 'peer',
+                    timestamp: data.timestamp,
+                    isEdited: data.isEdited
+                };
+                updatedExists = true;
+            }
+
+            if (!updatedExists) {
+                chats[peerId].push({
+                    id: data.id,
+                    type: data.type,
+                    content: data.content,
+                    caption: data.caption,
+                    sender: 'peer',
+                    timestamp: data.timestamp,
+                    isEdited: data.isEdited
+                });
+            }
+
+            // UI ni yangilaymiz
+            if (currentActiveChatId === peerId) {
+                renderMessages();
             } else {
-                const today = new Date();
-                yearMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
+                unreadCounts[peerId] = (unreadCounts[peerId] || 0) + 1;
             }
-            if (!yearMonth) return;
+            renderChatList();
+        }
 
-            const dateStr = `${yearMonth}-${String(day).padStart(2, '0')}`;
-            if (!attendance[dateStr]) {
-                attendance[dateStr] = {};
+        function setupConnection(conn) {
+            const peerId = conn.peer;
+            // Darhol xotiraga olish (Bazan 'open' event ulanish qabul qilinganda ishlamay qoladi)
+            connections[peerId] = conn;
+            if (!chats[peerId]) {
+                chats[peerId] = [];
             }
+            renderChatList();
 
-            const currentStatus = attendance[dateStr][studentId];
+            conn.on('open', () => {
+                connections[peerId] = conn;
+                if (!chats[peerId]) {
+                    chats[peerId] = [];
+                }
+                renderChatList();
+            });
 
-            if (!currentStatus) {
-                attendance[dateStr][studentId] = 'present';
-            } else if (currentStatus === 'present') {
-                attendance[dateStr][studentId] = 'absent';
-            } else {
-                delete attendance[dateStr][studentId];
+            conn.on('data', (data) => {
+                // Ishonch hosil qilish uchun kelgan data orqali ham yangilab qo'yamiz
+                connections[conn.peer] = conn;
+                processIncomingMessage(data);
+            });
+
+            conn.on('close', () => {
+                delete connections[conn.peer];
+            });
+        }
+
+        window.onbeforeunload = () => {
+            let activeIds = JSON.parse(localStorage.getItem('webmessage_active_ids') || '[]');
+            activeIds = activeIds.filter(id => id !== myId);
+            localStorage.setItem('webmessage_active_ids', JSON.stringify(activeIds));
+            localStorage.removeItem('webmessage_beat_' + myId);
+            
+            if (peer) {
+                peer.destroy();
             }
+        };
 
-            saveData();
-            renderStudents();
-            if (activeModalYear && activeModalMonth) {
-                renderModalStudents(activeModalYear, activeModalMonth);
+        function startApp() {
+            showScreen('chat-list-screen');
+            document.getElementById('bottom-nav').classList.remove('hidden');
+            renderChatList();
+        }
+
+        function resetApp() {
+            if (confirm("Chiqsangiz barcha ma'lumotlar tozalanadi. Ishonchingiz komilmi?")) {
+                location.reload();
             }
         }
 
-        function setAttendance(studentId, day, status) {
-            const today = new Date();
-            const yearMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
-            const dateStr = `${yearMonth}-${String(day).padStart(2, '0')}`;
-
-            if (!attendance[dateStr]) {
-                attendance[dateStr] = {};
-            }
-
-            // Agar ayni shu tugma bosilsa o'chiramiz, aks holda holatni o'zgartiramiz
-            if (attendance[dateStr][studentId] === status) {
-                delete attendance[dateStr][studentId];
-            } else {
-                attendance[dateStr][studentId] = status;
-            }
-
-            saveData();
-            renderStudents();
-            if (activeModalYear && activeModalMonth) {
-                renderModalStudents(activeModalYear, activeModalMonth);
-            }
+        // Navigation
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
         }
 
-        function renderStudents() {
-            const today = new Date();
-            const yearStr = today.getFullYear();
-            const monthStr = String(today.getMonth() + 1).padStart(2, '0');
-            const dayNum = today.getDate();
-            const yearMonth = `${yearStr}-${monthStr}`;
+        function switchTab(screenId, btnElement) {
+            showScreen(screenId);
+            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+            btnElement.classList.add('active');
+        }
 
-            // Generate Headers
-            let tHeadHtml = `
-                <tr>
-                    <th class="text-left" style="width: 40px;">№</th>
-                    <th class="text-left" style="min-width: 150px;">O'quvchi</th>
-                    <th class="text-right" style="min-width: 150px;">Bugungi davomat / Amallar</th>
-                </tr>
-            `;
-            tableHead.innerHTML = tHeadHtml;
+        // Modal logic
+        function openNewChatModal() {
+            document.getElementById('new-chat-modal').classList.add('active');
+            document.getElementById('peer-id-input').value = '';
+            document.getElementById('new-chat-error').style.display = 'none';
+            setTimeout(() => document.getElementById('peer-id-input').focus(), 100);
+        }
 
-            // Generate Body
-            if (students.length === 0) {
-                studentsTable.style.display = 'none';
-                emptyMessage.style.display = 'block';
+        function closeNewChatModal() {
+            document.getElementById('new-chat-modal').classList.remove('active');
+        }
+
+        function formatIdInput(input) {
+            let val = input.value.replace(/\D/g, '');
+            if (val.length > 3) {
+                val = val.substring(0, 3) + '-' + val.substring(3, 6);
+            }
+            input.value = val;
+        }
+
+        function startNewChat() {
+            const peerId = document.getElementById('peer-id-input').value;
+            const errorMsg = document.getElementById('new-chat-error');
+            const confirmBtn = document.querySelector('.btn-confirm');
+            errorMsg.style.display = 'none';
+
+            if (peerId.length !== 7 || peerId === myId) {
+                errorMsg.textContent = "To'g'ri ID kiriting!";
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            if (connections[peerId]) {
+                closeNewChatModal();
+                openChat(peerId);
+                return;
+            }
+
+            // Dastlab LocalStorage tekshiramiz (eng tezkor va ishinchlisi xuddi shu kompyuterdagisiga)!
+            const lastBeat = localStorage.getItem('webmessage_beat_' + peerId);
+            if (lastBeat && (Date.now() - parseInt(lastBeat)) <= 5000) {
+                // Mahalliy foydalanuvchi bor, darhol ochamiz!
+                connections[peerId] = { isLocalOnly: true };
+                if (!chats[peerId]) chats[peerId] = [];
+                closeNewChatModal();
+                openChat(peerId);
+                renderChatList();
+                
+                // Va fonga WebRTC ga harakat qilib quyamiz ehtimoldan xoli qimasdan
+                if (peer && !peer.disconnected && !peer.destroyed) {
+                    peer.connect(peerId, { reliable: true });
+                }
+                return;
+            }
+
+            confirmBtn.disabled = true;
+            confirmBtn.textContent = 'Qidirilmoqda...';
+            errorMsg.style.display = 'none';
+
+            // Agar qachondir tab ochiq qolib internet yoki server uzilgan bo'lsa darhol qayta ulaymiz
+            if (peer && peer.disconnected && !peer.destroyed) {
+                peer.reconnect();
+                setTimeout(() => {
+                    if (!peer.disconnected) {
+                        attemptPeerConnect(peerId, confirmBtn, errorMsg);
+                    } else {
+                        errorMsg.textContent = "Tarmoq bilan aloqa yo'q. Internetni tekshiring!";
+                        errorMsg.style.display = 'block';
+                        confirmBtn.disabled = false;
+                        confirmBtn.textContent = 'Suhbatlashish';
+                    }
+                }, 1500); // Kichik kutish
+                return;
+            }
+
+            attemptPeerConnect(peerId, confirmBtn, errorMsg);
+        }
+
+        function attemptPeerConnect(peerId, confirmBtn, errorMsg) {
+            const conn = peer.connect(peerId, { reliable: true });
+            
+            conn.on('open', () => {
+                confirmBtn.disabled = false;
+                confirmBtn.textContent = 'Suhbatlashish';
+                setupConnection(conn);
+                closeNewChatModal();
+                openChat(peerId);
+            });
+            
+            conn.on('error', (err) => {
+                // error handler is tracked in outer peer.on('error')
+            });
+        }
+
+        // Chat List Logic
+        function renderChatList() {
+            const chatListEl = document.getElementById('chat-list');
+            const emptyStateEl = document.getElementById('empty-chat-state');
+
+            chatListEl.innerHTML = '';
+            const peerIds = Object.keys(chats);
+
+            if (peerIds.length === 0) {
+                emptyStateEl.style.display = 'flex';
             } else {
-                studentsTable.style.display = 'table';
-                emptyMessage.style.display = 'none';
+                emptyStateEl.style.display = 'none';
+                peerIds.forEach(peerId => {
+                    const messages = chats[peerId];
+                    let lastMsg = 'Suhbat boshlandi...';
+                    if (messages.length > 0) {
+                        const lastObj = messages[messages.length - 1];
+                        if (lastObj.type === 'text') lastMsg = lastObj.content;
+                        else if (lastObj.type === 'image') lastMsg = '📷 Rasm';
+                        else if (lastObj.type === 'audio') lastMsg = '🎤 Ovozli xabar';
+                    }
 
-                studentsList.innerHTML = '';
-                students.forEach((student, index) => {
-                    const tr = document.createElement('tr');
+                    const li = document.createElement('li');
+                    li.className = 'chat-item';
+                    li.onclick = () => openChat(peerId);
 
-                    let rowHtml = `
-                        <td class="text-left">${index + 1}</td>
-                        <td class="text-left">
-                            <div class="student-name-wrapper">
-                                <span class="student-name">${escapeHTML(student.firstName)} ${escapeHTML(student.lastName)}</span>
-                                <span class="student-phone">${escapeHTML(student.phone)}</span>
-                            </div>
-                        </td>
+                    let badgeHtml = '';
+                    if (unreadCounts[peerId]) {
+                        badgeHtml = `<div class="unread-badge">${unreadCounts[peerId]}</div>`;
+                    }
+
+                    li.innerHTML = `
+                        <div class="avatar"><i class="fa-solid fa-user"></i></div>
+                        <div class="chat-info">
+                            <div class="chat-name">${peerId}</div>
+                            <div class="chat-preview">${lastMsg}</div>
+                        </div>
+                        ${badgeHtml}
                     `;
-
-                    const dateStr = `${yearMonth}-${String(dayNum).padStart(2, '0')}`;
-                    const status = (attendance[dateStr] && attendance[dateStr][student.id]) || null;
-
-                    let presentClass = status === 'present' ? 'present-active' : 'secondary';
-                    let absentClass = status === 'absent' ? 'absent-active' : 'secondary';
-
-                    let presentIcon = `<svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
-                    let absentIcon = `<svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>`;
-
-                    rowHtml += `
-                        <td class="text-right">
-                            <div class="actions">
-                                <button class="icon-btn ${presentClass}" onclick="setAttendance(${student.id}, ${dayNum}, 'present')" title="Bor">
-                                    ${presentIcon}
-                                </button>
-                                <button class="icon-btn ${absentClass}" onclick="setAttendance(${student.id}, ${dayNum}, 'absent')" title="Yo'q">
-                                    ${absentIcon}
-                                </button>
-                                <button class="icon-btn warning" onclick="openEditModal(${student.id})" title="Tahrirlash">
-                                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                                </button>
-                                <button class="icon-btn danger" onclick="deleteStudent(${student.id})" title="O'chirish">
-                                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                </button>
-                            </div>
-                        </td>
-                    `;
-
-                    tr.innerHTML = rowHtml;
-                    studentsList.appendChild(tr);
+                    chatListEl.appendChild(li);
                 });
             }
         }
 
-        function addStudent(e) {
-            e.preventDefault();
-
-            const firstNameInput = document.getElementById('first-name');
-            const lastNameInput = document.getElementById('last-name');
-            const phoneInput = document.getElementById('phone');
-
-            const newStudent = {
-                id: Date.now(),
-                firstName: firstNameInput.value.trim(),
-                lastName: lastNameInput.value.trim(),
-                phone: phoneInput.value.trim()
-            };
-
-            students.push(newStudent);
-            saveData();
-            renderStudents();
-
-            firstNameInput.value = '';
-            lastNameInput.value = '';
-            phoneInput.value = '';
+        // Chat View Logic
+        function openChat(peerId) {
+            currentActiveChatId = peerId;
+            unreadCounts[peerId] = 0;
+            renderChatList();
+            document.getElementById('current-chat-name').textContent = peerId;
+            showScreen('chat-view-screen');
+            renderMessages();
         }
 
-        function deleteStudent(id) {
-            if (confirm("Bu o'quvchini davomatdan butunlay o'chirishni xohlaysizmi?")) {
-                students = students.filter(s => s.id !== id);
+        function closeChat() {
+            currentActiveChatId = null;
+            editingMessageId = null;
+            document.getElementById('message-input').value = '';
+            showScreen('chat-list-screen');
+            renderChatList();
+        }
 
-                // Also clean up their attendance records
-                for (const date in attendance) {
-                    if (attendance[date][id]) {
-                        delete attendance[date][id];
+        function formatTime(timestamp) {
+            const d = new Date(timestamp);
+            return d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0');
+        }
+
+        function renderMessages() {
+            if (!currentActiveChatId) return;
+
+            const container = document.getElementById('messages-container');
+            container.innerHTML = '';
+            const messages = chats[currentActiveChatId] || [];
+
+            messages.forEach(msg => {
+                const div = document.createElement('div');
+                div.className = `message ${msg.sender === 'me' ? 'sent' : 'received'}`;
+                div.id = `msg-${msg.id}`;
+
+                let actionsHtml = '';
+                if (msg.sender === 'me') {
+                    actionsHtml = `
+                        <div class="msg-actions">
+                            <button onclick="editMessage('${msg.id}')"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="deleteMessage('${msg.id}')"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    `;
+                }
+
+                let contentHtml = '';
+                if (msg.type === 'text') {
+                    contentHtml = `<div class="text">${msg.content}</div>`;
+                } else if (msg.type === 'image') {
+                    let imgs = Array.isArray(msg.content) ? msg.content : [msg.content];
+                    if (imgs.length === 1) {
+                        contentHtml = `<img src="${imgs[0]}" class="msg-image" alt="Rasm">`;
+                    } else if (imgs.length > 1) {
+                        contentHtml = `<div class="img-grid">`;
+                        imgs.forEach(i => { contentHtml += `<img src="${i}" alt="Rasm">`; });
+                        contentHtml += `</div>`;
+                    }
+                    if (msg.caption) {
+                        contentHtml += `<div class="text" style="margin-top: 5px;">${msg.caption}</div>`;
+                    }
+                } else if (msg.type === 'audio') {
+                    contentHtml = `<audio controls src="${msg.content}" class="msg-audio"></audio>`;
+                    if (msg.caption) {
+                        contentHtml += `<div class="text" style="margin-top: 5px;">${msg.caption}</div>`;
                     }
                 }
 
-                saveData();
-                renderStudents();
-            }
-        }
+                let editedTagHtml = msg.isEdited ? `<span class="edited-tag">tahrirlangan</span>` : '';
 
-        function openEditModal(id) {
-            const student = students.find(s => s.id === id);
-            if (student) {
-                document.getElementById('edit-id').value = student.id;
-                document.getElementById('edit-first-name').value = student.firstName;
-                document.getElementById('edit-last-name').value = student.lastName;
-                document.getElementById('edit-phone').value = student.phone;
-
-                editModal.classList.add('active');
-            }
-        }
-
-        function closeModal() {
-            editModal.classList.remove('active');
-        }
-
-        function saveEdit(e) {
-            e.preventDefault();
-
-            const id = parseInt(document.getElementById('edit-id').value);
-            const index = students.findIndex(s => s.id === id);
-
-            if (index !== -1) {
-                students[index].firstName = document.getElementById('edit-first-name').value.trim();
-                students[index].lastName = document.getElementById('edit-last-name').value.trim();
-                students[index].phone = document.getElementById('edit-phone').value.trim();
-
-                saveData();
-                renderStudents();
-                closeModal();
-            }
-        }
-
-        function saveData() {
-            localStorage.setItem('attendance_students', JSON.stringify(students));
-            localStorage.setItem('attendance_records', JSON.stringify(attendance));
-        }
-
-        function escapeHTML(str) {
-            return str.replace(/[&<>'"]/g,
-                tag => ({
-                    '&': '&amp;',
-                    '<': '&lt;',
-                    '>': '&gt;',
-                    "'": '&#39;',
-                    '"': '&quot;'
-                }[tag])
-            );
-        }
-
-        // --- Monthly Grid & Modal Logic ---
-
-        const monthNames = ["Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun", "Iyul", "Avgust", "Sentabr", "Oktabr", "Noyabr", "Dekabr"];
-
-        function renderMonthsGrid() {
-            const grid = document.getElementById('months-grid');
-            let html = '';
-            const currentYear = new Date().getFullYear();
-
-            monthNames.forEach((name, index) => {
-                const monthNum = index + 1;
-                html += `<div class="month-card" onclick="openMonthModal(${currentYear}, ${monthNum}, '${name}')">${name}</div>`;
+                div.innerHTML = `
+                    ${contentHtml}
+                    <div class="msg-time flex justify-center items-center" style="justify-content: flex-end;">${editedTagHtml}${formatTime(msg.timestamp)}</div>
+                    ${actionsHtml}
+                `;
+                container.appendChild(div);
             });
-            grid.innerHTML = html;
+
+            container.scrollTop = container.scrollHeight;
         }
 
-        renderMonthsGrid();
+        function addMessageToChat(type, content, caption = '') {
+            if (!currentActiveChatId) return;
 
-        const monthModal = document.getElementById('month-modal');
+            let msgObj = null;
 
-        function openMonthModal(year, month, monthName) {
-            activeModalYear = year;
-            activeModalMonth = month;
-            document.getElementById('month-modal-title').innerText = `${year}-yil ${monthName} davomati`;
-            renderModalStudents(year, month);
-            monthModal.classList.add('active');
-        }
-
-        function closeMonthModal() {
-            activeModalYear = null;
-            activeModalMonth = null;
-            monthModal.classList.remove('active');
-        }
-
-        function renderModalStudents(year, month) {
-            const daysCount = getDaysInMonth(year, month);
-            const tHead = document.getElementById('modal-table-head');
-            const tBody = document.getElementById('modal-students-list');
-            const emptyMsg = document.getElementById('modal-empty-message');
-            const table = document.getElementById('modal-table');
-
-            let tHeadHtml = `
-                <tr>
-                    <th class="text-left" style="width: 40px;">№</th>
-                    <th class="text-left" style="min-width: 150px;">O'quvchi</th>
-            `;
-            for (let i = 1; i <= daysCount; i++) {
-                tHeadHtml += `<th title="${i}-${month}-${year}">${i}</th>`;
-            }
-            tHeadHtml += `</tr>`;
-            tHead.innerHTML = tHeadHtml;
-
-            if (students.length === 0) {
-                table.style.display = 'none';
-                emptyMsg.style.display = 'block';
-            } else {
-                table.style.display = 'table';
-                emptyMsg.style.display = 'none';
-
-                tBody.innerHTML = '';
-                const yearMonth = `${year}-${String(month).padStart(2, '0')}`;
-
-                students.forEach((student, index) => {
-                    const tr = document.createElement('tr');
-                    let rowHtml = `
-                        <td class="text-left">${index + 1}</td>
-                        <td class="text-left">
-                            <div class="student-name-wrapper">
-                                <span class="student-name">${escapeHTML(student.firstName)} ${escapeHTML(student.lastName)}</span>
-                                <span class="student-phone">${escapeHTML(student.phone)}</span>
-                            </div>
-                        </td>
-                    `;
-
-                    for (let day = 1; day <= daysCount; day++) {
-                        const dateStr = `${yearMonth}-${String(day).padStart(2, '0')}`;
-                        const status = (attendance[dateStr] && attendance[dateStr][student.id]) || null;
-
-                        let cellClass = "day-cell";
-                        let mark = "";
-                        if (status === 'present') {
-                            cellClass += " present";
-                            mark = "✔";
-                        } else if (status === 'absent') {
-                            cellClass += " absent";
-                            mark = "✖";
-                        }
-
-                        rowHtml += `
-                            <td>
-                                <div class="${cellClass}" onclick="toggleAttendance(${student.id}, ${day}, true, ${year}, ${month})" title="${day}-kun: ${student.firstName}">
-                                    ${mark}
-                                </div>
-                            </td>
-                        `;
+            if (editingMessageId) {
+                const msg = chats[currentActiveChatId].find(m => m.id === editingMessageId);
+                if (msg) {
+                    let isChanged = false;
+                    if (msg.type === 'text' && msg.content !== content) isChanged = true;
+                    else if (msg.type !== 'text') {
+                        if (msg.caption !== caption) isChanged = true;
+                        if (JSON.stringify(msg.content) !== JSON.stringify(content)) isChanged = true;
                     }
-                    tr.innerHTML = rowHtml;
-                    tBody.appendChild(tr);
+
+                    if (isChanged) {
+                        msg.content = content;
+                        msg.caption = caption;
+                        msg.isEdited = true;
+                    }
+                    msgObj = msg;
+                }
+                editingMessageId = null;
+            } else {
+                msgObj = {
+                    id: Date.now().toString() + Math.random().toString(36).substr(2, 5),
+                    type: type,
+                    content: content,
+                    caption: caption,
+                    sender: 'me',
+                    timestamp: Date.now(),
+                    isEdited: false
+                };
+                chats[currentActiveChatId].push(msgObj);
+            }
+
+            if (msgObj) {
+                const bMsg = {
+                    id: msgObj.id,
+                    type: msgObj.type,
+                    content: msgObj.content,
+                    caption: msgObj.caption,
+                    sender: myId,
+                    recipient: currentActiveChatId,
+                    timestamp: msgObj.timestamp,
+                    isEdited: msgObj.isEdited
+                };
+
+                // Har doim WebRTC orqali yuboramiz (agar to'liq ulangan bo'lsa isLocalOnly false)
+                if (connections[currentActiveChatId] && !connections[currentActiveChatId].isLocalOnly) {
+                    connections[currentActiveChatId].send(bMsg);
+                }
+                
+                // Va har doim ikkilamchi kafolat uchun LocalStorage dan ham yuboramiz (huddi shu brauzerlar uchun)
+                localStorage.setItem('webmessage_broadcast', JSON.stringify(bMsg));
+            }
+
+            renderMessages();
+            renderChatList();
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('message-input');
+            const text = input.value.trim();
+            
+            if (pendingMedia.type === 'image') {
+                if (pendingMedia.images.length === 0) {
+                    // if images were removed while editing, fallback to text if any
+                    if (text) addMessageToChat('text', text);
+                } else {
+                    addMessageToChat('image', pendingMedia.images, text);
+                }
+                cancelMediaPreview();
+                input.value = '';
+                return;
+            }
+
+            if (pendingMedia.type === 'audio') {
+                addMessageToChat('audio', pendingMedia.audio, text);
+                cancelMediaPreview();
+                input.value = '';
+                return;
+            }
+
+            if (!text) return;
+
+            addMessageToChat('text', text);
+            input.value = '';
+            cancelMediaPreview();
+        }
+
+        // Listen for Enter key
+        document.getElementById('message-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Media Handling
+        function triggerImageUpload() {
+            document.getElementById('image-upload').click();
+        }
+
+        function renderMediaPreview() {
+            const list = document.getElementById('preview-list');
+            list.innerHTML = '';
+            document.getElementById('add-more-img').classList.add('hidden');
+
+            if (pendingMedia.type === 'image') {
+                pendingMedia.images.forEach((imgSrc, idx) => {
+                    const div = document.createElement('div');
+                    div.className = 'preview-item';
+                    div.innerHTML = `
+                        <img src="${imgSrc}" class="image-preview-thumb">
+                        <div class="remove-media-btn" onclick="removePendingImage(${idx})"><i class="fa-solid fa-xmark"></i></div>
+                    `;
+                    list.appendChild(div);
                 });
+                document.getElementById('add-more-img').classList.remove('hidden');
+            } else if (pendingMedia.type === 'audio') {
+                const div = document.createElement('div');
+                div.className = 'preview-item';
+                div.innerHTML = `<audio controls src="${pendingMedia.audio}" style="height: 40px; margin-top: 10px;"></audio>`;
+                list.appendChild(div);
+            }
+
+            if (pendingMedia.type) {
+                document.getElementById('image-preview-area').classList.add('active');
+            } else {
+                document.getElementById('image-preview-area').classList.remove('active');
             }
         }
 
-        // Close modal when clicking outside
-        editModal.addEventListener('click', function (e) {
-            if (e.target === this) {
-                closeModal();
+        function sendImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    if (pendingMedia.type !== 'image') {
+                        pendingMedia = { type: 'image', images: [], audio: null };
+                    }
+                    pendingMedia.images.push(e.target.result);
+                    renderMediaPreview();
+                    document.getElementById('message-input').focus();
+                }
+                reader.readAsDataURL(file);
+                event.target.value = ''; 
             }
-        });
+        }
 
-        monthModal.addEventListener('click', function (e) {
-            if (e.target === this) {
-                closeMonthModal();
+        function removePendingImage(idx) {
+            pendingMedia.images.splice(idx, 1);
+            if (pendingMedia.images.length === 0) {
+                cancelMediaPreview();
+            } else {
+                renderMediaPreview();
             }
-        });
+        }
+
+        function cancelMediaPreview() {
+            pendingMedia = { type: null, images: [], audio: null };
+            document.getElementById('image-preview-area').classList.remove('active');
+            if (editingMessageId && pendingMedia.type !== null) {
+                editingMessageId = null;
+                document.getElementById('message-input').value = '';
+            }
+        }
+
+        // Audio Recording Handling
+        async function toggleRecording() {
+            const micBtn = document.getElementById('mic-btn');
+            const inputField = document.getElementById('message-input');
+
+            if (!isRecording) {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+
+                    mediaRecorder.ondataavailable = e => {
+                        audioChunks.push(e.data);
+                    };
+
+                    mediaRecorder.onstop = () => {
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                        // ObjectURL browserlar orasida ishlamaydi (Blob faqat local xotirada bo'ladi).
+                        // Uni barcha joyda ishlashi uchun Base64 Data URL ga o'giramiz.
+                        const reader = new FileReader();
+                        reader.readAsDataURL(audioBlob);
+                        reader.onloadend = () => {
+                            const base64AudioUrl = reader.result;
+                            pendingMedia = { type: 'audio', images: [], audio: base64AudioUrl };
+                            renderMediaPreview();
+                            document.getElementById('message-input').focus();
+                            audioChunks = [];
+                        };
+                    };
+
+                    audioChunks = [];
+                    mediaRecorder.start();
+                    isRecording = true;
+                    micBtn.classList.add('recording');
+                    inputField.placeholder = "Ovoz yozilmoqda...";
+                    inputField.disabled = true;
+                } catch (err) {
+                    alert("Mikrofonga ruxsat berilmadi yoki mavjud emas!");
+                }
+            } else {
+                mediaRecorder.stop();
+                mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                isRecording = false;
+                micBtn.classList.remove('recording');
+                inputField.placeholder = "Xabar yozing...";
+                inputField.disabled = false;
+            }
+        }
+
+        function editMessage(msgId) {
+            const msg = chats[currentActiveChatId].find(m => m.id === msgId);
+            if (msg) {
+                editingMessageId = msgId;
+                document.getElementById('message-input').focus();
+
+                if (msg.type === 'text') {
+                    document.getElementById('message-input').value = msg.content;
+                    cancelMediaPreview();
+                    editingMessageId = msgId; // restore since cancel wipes it
+                } else if (msg.type === 'image') {
+                    document.getElementById('message-input').value = msg.caption || '';
+                    pendingMedia = { type: 'image', images: Array.isArray(msg.content) ? [...msg.content] : [msg.content], audio: null };
+                    renderMediaPreview();
+                } else if (msg.type === 'audio') {
+                    document.getElementById('message-input').value = msg.caption || '';
+                    pendingMedia = { type: 'audio', images: [], audio: msg.content };
+                    renderMediaPreview();
+                }
+            }
+        }
+
+        function deleteMessage(msgId) {
+            if (confirm("Xabarni o'chirishni xohlaysizmi?")) {
+                chats[currentActiveChatId] = chats[currentActiveChatId].filter(m => m.id !== msgId);
+                renderMessages();
+            }
+        }
+
     </script>
+
 </body>
 
 </html>
